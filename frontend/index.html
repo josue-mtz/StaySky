@@ -3,83 +3,145 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Buscador de Viajes por Clima + Presupuesto</title>
+  <title>StaySky · Clima + Presupuesto</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen">
 
   <header class="bg-white shadow">
-    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-      <h1 class="text-xl font-bold">StaySky - Buscador de Viajes por Clima + Presupuesto</h1>
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <h1 class="text-xl font-bold">StaySky · Clima + Presupuesto</h1>
       <span id="status" class="text-xs text-slate-500">Conectando…</span>
     </div>
   </header>
 
-  <main class="max-w-5xl mx-auto px-6 py-10">
-    <section class="bg-white rounded-2xl shadow p-8">
-      <h2 class="text-2xl font-semibold mb-6">Encuentra tu próximo destino</h2>
+  <main class="max-w-6xl mx-auto px-6 py-8">
 
-      <form id="searchForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Formulario -->
+    <section class="bg-white rounded-2xl shadow p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">Planifica tu escapada</h2>
+      <form id="searchForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
-          <label class="block text-sm font-medium mb-1">Origen (IATA)</label>
-          <input name="origin" value="MEX" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Destino (IATA)</label>
-          <input name="destination" value="CUN" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <label class="block text-sm font-medium mb-1">Destino</label>
+          <select name="destination" id="destination" class="w-full border rounded-lg px-3 py-2"></select>
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">Fecha de ida</label>
-          <input type="date" name="departDate" value="2027-03-12" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input type="date" name="departDate" value="2027-03-12" class="w-full border rounded-lg px-3 py-2" />
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">Presupuesto (MXN)</label>
-          <input type="number" name="budget" value="5000" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input type="number" name="budget" value="5000" class="w-full border rounded-lg px-3 py-2" />
         </div>
-        <div class="md:col-span-2">
-          <label class="block text-sm font-medium mb-1">Preferencia climática</label>
-          <select name="weatherPref" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="warm">Cálido (25–32 °C)</option>
-            <option value="mild">Templado (15–24 °C)</option>
-            <option value="cold">Frío (5–15 °C)</option>
+        <div>
+          <label class="block text-sm font-medium mb-1">Clima</label>
+          <select name="weatherPref" class="w-full border rounded-lg px-3 py-2">
+            <option value="warm">Cálido</option>
+            <option value="mild">Templado</option>
+            <option value="cold">Frío</option>
           </select>
         </div>
-        <div class="md:col-span-2">
-          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition">
-            Buscar
-          </button>
-        </div>
+        <button class="md:col-span-4 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium">
+          Ver clima del destino
+        </button>
       </form>
     </section>
 
-    <section id="results" class="mt-8">
+    <!-- Clima del destino -->
+    <section id="climatePanel" class="hidden bg-white rounded-2xl shadow p-6 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold">Clima típico · <span id="climateCity"></span></h2>
+        <span id="climateSource" class="text-xs text-slate-400"></span>
+      </div>
+      <div id="climateGrid" class="grid grid-cols-2 md:grid-cols-6 gap-3"></div>
+    </section>
+
+    <!-- Placeholder vuelos/hoteles -->
+    <section class="bg-white rounded-2xl shadow p-6">
       <p class="text-center text-slate-500 text-sm">
-        Los resultados aparecerán aquí a partir de la Fase 5.
+        Vuelos y hoteles se activarán en las Fases 3 y 4.
       </p>
     </section>
   </main>
 
   <script>
+    const API = '';
+    const state = { cities: [] };
+
     async function checkHealth() {
       const el = document.getElementById('status');
       try {
-        const r = await fetch('/health');
-        const data = await r.json();
-        el.textContent = `API: ${data.status} · Mongo: ${data.mongo}`;
-        el.className = data.mongo === 'connected'
+        const r = await fetch(`${API}/health`);
+        const d = await r.json();
+        el.textContent = `API: ${d.status} · Mongo: ${d.mongo}`;
+        el.className = d.mongo === 'connected'
           ? 'text-xs text-green-600 font-medium'
           : 'text-xs text-red-600 font-medium';
-      } catch (e) {
+      } catch {
         el.textContent = 'API caída';
         el.className = 'text-xs text-red-600 font-medium';
       }
     }
+
+    async function loadCities() {
+      const sel = document.getElementById('destination');
+      try {
+        const r = await fetch(`${API}/api/cities`);
+        state.cities = await r.json();
+        if (!state.cities.length) {
+          sel.innerHTML = `<option value="">Sin ciudades. Corre /api/cities/seed</option>`;
+          return;
+        }
+        sel.innerHTML = state.cities
+          .map(c => `<option value="${c.iata}">${c.name} (${c.iata})</option>`)
+          .join('');
+        sel.value = 'CUN';
+      } catch (e) {
+        sel.innerHTML = `<option value="">Error cargando ciudades</option>`;
+      }
+    }
+
+    async function loadClimate(iata) {
+      const panel = document.getElementById('climatePanel');
+      const grid = document.getElementById('climateGrid');
+      document.getElementById('climateCity').textContent = iata;
+      grid.innerHTML = `<p class="col-span-full text-slate-400 text-sm">Cargando clima…</p>`;
+      panel.classList.remove('hidden');
+
+      try {
+        // 1) Asegura que haya datos (cachea 1 año desde Open-Meteo)
+        const w = await fetch(
+          `${API}/api/weather/${iata}?start_date=2023-01-01&end_date=2023-12-31`
+        ).then(r => r.json());
+        document.getElementById('climateSource').textContent =
+          `Fuente: ${w.source} · ${w.count} días`;
+
+        // 2) Pide el resumen mensual agregado en Mongo
+        const c = await fetch(`${API}/api/weather/${iata}/climate`).then(r => r.json());
+        const monthNames = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+
+        grid.innerHTML = c.months.map(m => `
+          <div class="border rounded-xl p-3 text-center bg-slate-50">
+            <div class="text-xs text-slate-500 mb-1">${monthNames[parseInt(m.month)-1]}</div>
+            <div class="text-lg font-semibold">${m.tempMaxC}°</div>
+            <div class="text-xs text-slate-400">${m.tempMinC}° min</div>
+            <div class="text-xs text-blue-500 mt-1">💧 ${m.precipMm}mm</div>
+          </div>
+        `).join('');
+      } catch (e) {
+        grid.innerHTML = `<p class="col-span-full text-red-500 text-sm">Error: ${e.message}</p>`;
+      }
+    }
+
     document.getElementById('searchForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      alert('El endpoint /api/search estará listo en la Fase 5.');
+      loadClimate(document.getElementById('destination').value);
     });
-    checkHealth();
-  </script>
 
+    (async () => {
+      await checkHealth();
+      await loadCities();
+    })();
+  </script>
 </body>
 </html>
