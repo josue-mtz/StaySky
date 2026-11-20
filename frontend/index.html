@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buscador de Viajes por Clima + Presupuesto</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+
+  <header class="bg-white shadow">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+      <h1 class="text-xl font-bold">StaySky - Buscador de Viajes por Clima + Presupuesto</h1>
+      <span id="status" class="text-xs text-slate-500">Conectando…</span>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 py-10">
+    <section class="bg-white rounded-2xl shadow p-8">
+      <h2 class="text-2xl font-semibold mb-6">Encuentra tu próximo destino</h2>
+
+      <form id="searchForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Origen (IATA)</label>
+          <input name="origin" value="MEX" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Destino (IATA)</label>
+          <input name="destination" value="CUN" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Fecha de ida</label>
+          <input type="date" name="departDate" value="2027-03-12" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Presupuesto (MXN)</label>
+          <input type="number" name="budget" value="5000" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-sm font-medium mb-1">Preferencia climática</label>
+          <select name="weatherPref" class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="warm">Cálido (25–32 °C)</option>
+            <option value="mild">Templado (15–24 °C)</option>
+            <option value="cold">Frío (5–15 °C)</option>
+          </select>
+        </div>
+        <div class="md:col-span-2">
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition">
+            Buscar
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section id="results" class="mt-8">
+      <p class="text-center text-slate-500 text-sm">
+        Los resultados aparecerán aquí a partir de la Fase 5.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    async function checkHealth() {
+      const el = document.getElementById('status');
+      try {
+        const r = await fetch('/health');
+        const data = await r.json();
+        el.textContent = `API: ${data.status} · Mongo: ${data.mongo}`;
+        el.className = data.mongo === 'connected'
+          ? 'text-xs text-green-600 font-medium'
+          : 'text-xs text-red-600 font-medium';
+      } catch (e) {
+        el.textContent = 'API caída';
+        el.className = 'text-xs text-red-600 font-medium';
+      }
+    }
+    document.getElementById('searchForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('El endpoint /api/search estará listo en la Fase 5.');
+    });
+    checkHealth();
+  </script>
+
+</body>
+</html>
