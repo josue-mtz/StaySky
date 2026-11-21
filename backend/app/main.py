@@ -1,30 +1,38 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.config import settings
-from app.routes.cities import router as cities_router
-from app.routes.weather import router as weather_router
+from app.db import ensure_indexes
+from app.routes import cities, flights, weather
+
+client = AsyncIOMotorClient(settings.mongo_url)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await ensure_indexes()
+    yield
+    client.close()
+
 
 app = FastAPI(
-    title="StaySky - Buscador de Viajes por Clima + Presupuesto",
-    version="0.1.0",
+    title="StaySky · Buscador de Viajes por Clima + Presupuesto",
+    version="0.3.0",
+    lifespan=lifespan,
 )
 
-# Cliente Mongo (conexión lazy: se abre al primer uso)
-client = AsyncIOMotorClient(settings.mongo_url)
-db = client[settings.mongo_db]
-app.include_router(cities_router)
-app.include_router(weather_router)
-
-# Sirve archivos estáticos (CSS, JS, imágenes) desde /static
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
+app.include_router(cities.router)
+app.include_router(weather.router)
+app.include_router(flights.router)
 
 
 @app.get("/health", tags=["infra"])
 async def health():
-    """Ping a MongoDB. Devuelve estado real de la conexión."""
     try:
         await client.admin.command("ping")
         mongo_status = "connected"
@@ -35,5 +43,4 @@ async def health():
 
 @app.get("/", include_in_schema=False)
 async def root():
-    """Sirve el index.html del frontend."""
     return FileResponse("frontend/index.html")

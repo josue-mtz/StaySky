@@ -10,45 +10,41 @@
 
   <header class="bg-white shadow">
     <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <h1 class="text-xl font-bold">StaySky · Clima + Presupuesto</h1>
+      <h1 class="text-xl font-bold">🌤️ StaySky · Clima + Presupuesto</h1>
       <span id="status" class="text-xs text-slate-500">Conectando…</span>
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-6 py-8">
+  <main class="max-w-6xl mx-auto px-6 py-8 space-y-6">
 
     <!-- Formulario -->
-    <section class="bg-white rounded-2xl shadow p-6 mb-6">
+    <section class="bg-white rounded-2xl shadow p-6">
       <h2 class="text-xl font-semibold mb-4">Planifica tu escapada</h2>
       <form id="searchForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Origen</label>
+          <select name="origin" id="origin" class="w-full border rounded-lg px-3 py-2"></select>
+        </div>
         <div>
           <label class="block text-sm font-medium mb-1">Destino</label>
           <select name="destination" id="destination" class="w-full border rounded-lg px-3 py-2"></select>
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">Fecha de ida</label>
-          <input type="date" name="departDate" value="2027-03-12" class="w-full border rounded-lg px-3 py-2" />
+          <input type="date" name="departDate" id="departDate" value="2027-03-12" class="w-full border rounded-lg px-3 py-2" />
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">Presupuesto (MXN)</label>
           <input type="number" name="budget" value="5000" class="w-full border rounded-lg px-3 py-2" />
         </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Clima</label>
-          <select name="weatherPref" class="w-full border rounded-lg px-3 py-2">
-            <option value="warm">Cálido</option>
-            <option value="mild">Templado</option>
-            <option value="cold">Frío</option>
-          </select>
-        </div>
         <button class="md:col-span-4 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium">
-          Ver clima del destino
+          Buscar
         </button>
       </form>
     </section>
 
-    <!-- Clima del destino -->
-    <section id="climatePanel" class="hidden bg-white rounded-2xl shadow p-6 mb-6">
+    <!-- Clima -->
+    <section id="climatePanel" class="hidden bg-white rounded-2xl shadow p-6">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-semibold">Clima típico · <span id="climateCity"></span></h2>
         <span id="climateSource" class="text-xs text-slate-400"></span>
@@ -56,12 +52,17 @@
       <div id="climateGrid" class="grid grid-cols-2 md:grid-cols-6 gap-3"></div>
     </section>
 
-    <!-- Placeholder vuelos/hoteles -->
-    <section class="bg-white rounded-2xl shadow p-6">
-      <p class="text-center text-slate-500 text-sm">
-        Vuelos y hoteles se activarán en las Fases 3 y 4.
-      </p>
+    <!-- Vuelos -->
+    <section id="flightsPanel" class="hidden bg-white rounded-2xl shadow p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-semibold">Vuelos disponibles</h2>
+        <span id="flightsMeta" class="text-xs text-slate-400"></span>
+      </div>
+      <div id="flightsList" class="space-y-3"></div>
     </section>
+
+    <!-- Aviso -->
+    <section id="notice" class="hidden bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-800"></section>
   </main>
 
   <script>
@@ -84,20 +85,108 @@
     }
 
     async function loadCities() {
-      const sel = document.getElementById('destination');
+      const r = await fetch(`${API}/api/cities`);
+      state.cities = await r.json();
+      const opts = state.cities
+        .map(c => `<option value="${c.iata}">${c.name} (${c.iata})</option>`)
+        .join('');
+      const origin = document.getElementById('origin');
+      const dest = document.getElementById('destination');
+      origin.innerHTML = opts;
+      dest.innerHTML = opts;
+      origin.value = 'MEX';
+      dest.value = 'CUN';
+    }
+
+    function money(n) {
+      return n == null ? '—' : '$' + n.toLocaleString('es-MX', { maximumFractionDigits: 0 }) + ' MXN';
+    }
+
+    function hhmm(iso) {
+      if (!iso) return '--:--';
+      return iso.slice(11, 16);
+    }
+
+    function fmtDuration(min) {
+      const h = Math.floor(min / 60), m = min % 60;
+      return `${h}h ${m.toString().padStart(2, '0')}m`;
+    }
+
+    function renderFlights(data) {
+      const list = document.getElementById('flightsList');
+      const meta = document.getElementById('flightsMeta');
+      meta.textContent = `${data.count} vuelos · ${data.origin} → ${data.destination} · ${data.departDate}`;
+
+      list.innerHTML = data.flights.map(f => {
+        const badgesHtml = f.badges.map(b => {
+          const color = b === 'CHEAPEST' ? 'bg-green-100 text-green-700'
+                     : b === 'FASTEST'  ? 'bg-purple-100 text-purple-700'
+                     : 'bg-blue-100 text-blue-700';
+          return `<span class="text-[10px] font-medium px-2 py-0.5 rounded ${color}">${b}</span>`;
+        }).join(' ');
+
+        const discount = f.priceBeforeDiscount && f.priceBeforeDiscount > f.price
+          ? `<span class="text-xs text-slate-400 line-through ml-2">${money(f.priceBeforeDiscount)}</span>`
+          : '';
+
+        const baggage = f.hasCheckedBaggageIncluded
+          ? '<span class="text-green-600">✅ Maleta documentada incluida</span>'
+          : '<span class="text-slate-400">🎒 Solo artículo personal</span>';
+
+        const stopsLabel = f.stops === 0 ? '<span class="text-green-600 font-medium">Directo</span>'
+                        : `<span class="text-amber-600">${f.stops} escala${f.stops > 1 ? 's' : ''}</span>`;
+
+        return `
+          <div class="border rounded-xl p-4 hover:border-blue-300 transition">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="font-semibold">${f.airline.name || f.airline.code}</span>
+                  <span class="text-xs text-slate-400">${f.flightNumber}</span>
+                  ${badgesHtml}
+                </div>
+                <div class="flex items-center gap-3 text-sm">
+                  <span class="font-mono font-semibold">${hhmm(f.departTime)}</span>
+                  <span class="text-slate-300">→</span>
+                  <span class="font-mono font-semibold">${hhmm(f.arrivalTime)}</span>
+                  <span class="text-xs text-slate-400">· ${fmtDuration(f.durationMinutes)}</span>
+                  <span class="text-xs">· ${stopsLabel}</span>
+                </div>
+                <div class="mt-2 text-xs">${baggage}</div>
+              </div>
+              <div class="text-right">
+                <div class="text-lg font-bold text-blue-700">${money(f.price)}</div>
+                ${discount}
+                <div class="text-xs text-slate-400 mt-1">${f.fareName || ''}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function loadFlights(iata, date) {
+      const panel = document.getElementById('flightsPanel');
+      const list = document.getElementById('flightsList');
+      panel.classList.remove('hidden');
+      list.innerHTML = `<p class="text-slate-400 text-sm">Buscando vuelos cacheados…</p>`;
+      document.getElementById('notice').classList.add('hidden');
+
+      const origin = document.getElementById('origin').value;
       try {
-        const r = await fetch(`${API}/api/cities`);
-        state.cities = await r.json();
-        if (!state.cities.length) {
-          sel.innerHTML = `<option value="">Sin ciudades. Corre /api/cities/seed</option>`;
+        const r = await fetch(`${API}/api/flights/${origin}/${iata}?date=${date}`);
+        if (r.status === 404) {
+          const err = await r.json();
+          list.innerHTML = '';
+          const notice = document.getElementById('notice');
+          notice.textContent = err.detail + ' (Para la demo: importa el JSON de CUN con /api/flights/import-json)';
+          notice.classList.remove('hidden');
           return;
         }
-        sel.innerHTML = state.cities
-          .map(c => `<option value="${c.iata}">${c.name} (${c.iata})</option>`)
-          .join('');
-        sel.value = 'CUN';
+        const data = await r.json();
+        renderFlights(data);
       } catch (e) {
-        sel.innerHTML = `<option value="">Error cargando ciudades</option>`;
+        list.innerHTML = `<p class="text-red-500 text-sm">Error: ${e.message}</p>`;
       }
     }
 
@@ -105,37 +194,30 @@
       const panel = document.getElementById('climatePanel');
       const grid = document.getElementById('climateGrid');
       document.getElementById('climateCity').textContent = iata;
-      grid.innerHTML = `<p class="col-span-full text-slate-400 text-sm">Cargando clima…</p>`;
       panel.classList.remove('hidden');
+      grid.innerHTML = `<p class="col-span-full text-slate-400 text-sm">Cargando…</p>`;
 
-      try {
-        // 1) Asegura que haya datos (cachea 1 año desde Open-Meteo)
-        const w = await fetch(
-          `${API}/api/weather/${iata}?start_date=2023-01-01&end_date=2023-12-31`
-        ).then(r => r.json());
-        document.getElementById('climateSource').textContent =
-          `Fuente: ${w.source} · ${w.count} días`;
+      const w = await fetch(`${API}/api/weather/${iata}?start_date=2023-01-01&end_date=2023-12-31`).then(r => r.json());
+      document.getElementById('climateSource').textContent = `${w.source} · ${w.count} días`;
 
-        // 2) Pide el resumen mensual agregado en Mongo
-        const c = await fetch(`${API}/api/weather/${iata}/climate`).then(r => r.json());
-        const monthNames = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-
-        grid.innerHTML = c.months.map(m => `
-          <div class="border rounded-xl p-3 text-center bg-slate-50">
-            <div class="text-xs text-slate-500 mb-1">${monthNames[parseInt(m.month)-1]}</div>
-            <div class="text-lg font-semibold">${m.tempMaxC}°</div>
-            <div class="text-xs text-slate-400">${m.tempMinC}° min</div>
-            <div class="text-xs text-blue-500 mt-1">💧 ${m.precipMm}mm</div>
-          </div>
-        `).join('');
-      } catch (e) {
-        grid.innerHTML = `<p class="col-span-full text-red-500 text-sm">Error: ${e.message}</p>`;
-      }
+      const c = await fetch(`${API}/api/weather/${iata}/climate`).then(r => r.json());
+      const names = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+      grid.innerHTML = c.months.map(m => `
+        <div class="border rounded-xl p-3 text-center bg-slate-50">
+          <div class="text-xs text-slate-500 mb-1">${names[parseInt(m.month)-1]}</div>
+          <div class="text-lg font-semibold">${m.tempMaxC}°</div>
+          <div class="text-xs text-slate-400">${m.tempMinC}° min</div>
+          <div class="text-xs text-blue-500 mt-1">💧 ${m.precipMm}mm</div>
+        </div>
+      `).join('');
     }
 
-    document.getElementById('searchForm').addEventListener('submit', (e) => {
+    document.getElementById('searchForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      loadClimate(document.getElementById('destination').value);
+      const iata = document.getElementById('destination').value;
+      const date = document.getElementById('departDate').value;
+      await loadClimate(iata);
+      await loadFlights(iata, date);
     });
 
     (async () => {

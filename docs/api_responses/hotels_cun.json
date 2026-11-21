@@ -1,0 +1,1373 @@
+{
+  "status": true,
+  "message": "Success",
+  "timestamp": 1795203561371,
+  "data": {
+    "hotels": [
+      {
+        "hotel_id": 11103361,
+        "accessibilityLabel": "City Express by Marriott Cancun Aeropuerto.\n3 out of 5 stars.\nThis is a Preferred property.\n7.9 Good 6321 reviews.\n‎12.8 km from centre‬\n‎Sustainability certification‬.\nBreakfast included.\n Hotel room : 1 bed.\nPrice for 3 nights, 2 adults.\n6064 MXN.\nIncludes taxes and charges.\nFree cancellation.\nNo prepayment needed.\nWe have 5 left at this price.",
+        "property": {
+          "accuratePropertyClass": 3,
+          "blockIds": [
+            "1110336101_386558597_2_1_0"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "12:00",
+            "untilTime": "13:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "MXN",
+          "id": 11103361,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "latitude": 21.04679,
+          "longitude": -86.84968,
+          "mainPhotoId": 518337355,
+          "name": "City Express by Marriott Cancun Aeropuerto",
+          "optOutFromGalleryChanges": 0,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/518337355.jpg?k=3feca65b4d45737020e9e1c48cea7ed483526503e703d371ae56135e321e51bb&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/518337355.jpg?k=3feca65b4d45737020e9e1c48cea7ed483526503e703d371ae56135e321e51bb&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/518337355.jpg?k=3feca65b4d45737020e9e1c48cea7ed483526503e703d371ae56135e321e51bb&o="
+          ],
+          "position": 0,
+          "priceBreakdown": {
+            "benefitBadges": [],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 6,064",
+              "currency": "MXN",
+              "value": 6064.2
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 3,
+          "qualityClass": 0,
+          "rankingPosition": 0,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 1 bed",
+          "reviewCount": 6321,
+          "reviewScore": 7.9,
+          "reviewScoreWord": "Good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 14030182,
+        "accessibilityLabel": "Riu Ventura - All Inclusive.\n4 out of 5 stars.\nThis is a Preferred property.\n8.7 Fabulous 609 reviews.\n‎Zona Hotelera‬ • ‎12.6 km from centre‬\n‎Beachfront‬.\nAll-Inclusive.\n Hotel room : 2 beds.\nPrice for 3 nights, 2 adults.\nOriginal price 31217 MXN. Current price 22371 MXN..\nIncludes taxes and charges.\nFree cancellation.\nNo prepayment needed.",
+        "property": {
+          "accuratePropertyClass": 4,
+          "blockIds": [
+            "1403018201_412191677_2_85_0_1478488"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "08:00",
+            "untilTime": "12:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 14030182,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "latitude": 21.0597661703899,
+          "longitude": -86.7807512140315,
+          "mainPhotoId": 809458464,
+          "name": "Riu Ventura - All Inclusive",
+          "optOutFromGalleryChanges": 0,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/809458464.jpg?k=06a7c40cb812d869ccb2f72972bc9309ebe236a215137e892505fd125f48f96d&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/809458464.jpg?k=06a7c40cb812d869ccb2f72972bc9309ebe236a215137e892505fd125f48f96d&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/809458464.jpg?k=06a7c40cb812d869ccb2f72972bc9309ebe236a215137e892505fd125f48f96d&o="
+          ],
+          "position": 1,
+          "priceBreakdown": {
+            "benefitBadges": [],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 22,371",
+              "currency": "MXN",
+              "value": 22370.536451005537
+            },
+            "strikethroughPrice": {
+              "amountRounded": "MXN 31,217",
+              "currency": "MXN",
+              "value": 31216.52065193884
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 4,
+          "qualityClass": 0,
+          "rankingPosition": 1,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 2 beds",
+          "reviewCount": 609,
+          "reviewScore": 8.7,
+          "reviewScoreWord": "Fabulous",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 4624045,
+        "accessibilityLabel": "Fairfield Inn & Suites by Marriott Cancun Airport.\n4 out of 5 stars.\nThis is a Preferred property.\n8.4 Very good 2861 reviews.\n‎12.4 km from centre‬.\nBreakfast included.\n Hotel room : 2 beds.\nPrice for 3 nights, 2 adults.\n5928 MXN.\nIncludes taxes and charges.\nWe have 5 left at this price.",
+        "property": {
+          "accuratePropertyClass": 4,
+          "blockIds": [
+            "462404503_141220200_2_1_0"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "12:00",
+            "untilTime": "12:30"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 4624045,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "latitude": 21.05105,
+          "longitude": -86.849286,
+          "mainPhotoId": 687795790,
+          "name": "Fairfield Inn & Suites by Marriott Cancun Airport",
+          "optOutFromGalleryChanges": 1,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/687795790.jpg?k=3c877a29d05e5f855c101028087467a1e49d9a47308e9fa5be720a81f7ee14a9&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/687795790.jpg?k=3c877a29d05e5f855c101028087467a1e49d9a47308e9fa5be720a81f7ee14a9&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/687795790.jpg?k=3c877a29d05e5f855c101028087467a1e49d9a47308e9fa5be720a81f7ee14a9&o="
+          ],
+          "position": 2,
+          "priceBreakdown": {
+            "benefitBadges": [],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 5,928",
+              "currency": "MXN",
+              "value": 5927.972107604853
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 4,
+          "qualityClass": 0,
+          "rankingPosition": 2,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 2 beds",
+          "reviewCount": 2861,
+          "reviewScore": 8.4,
+          "reviewScoreWord": "Very good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 78068,
+        "accessibilityLabel": "Krystal Cancun.\n4 out of 5 stars.\n7.8 Good 2603 reviews.\n‎Zona Hotelera‬ • ‎9.7 km from centre‬\n‎Beachfront‬.\nBlack Friday Deal.\n Hotel room : 1 bed.\nPrice for 3 nights, 2 adults.\nOriginal price 24435 MXN. Current price 12360 MXN..\nIncludes taxes and charges.\nFree cancellation.",
+        "property": {
+          "accuratePropertyClass": 4,
+          "blockIds": [
+            "7806810_428155665_2_42_0_377045"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "00:00",
+            "untilTime": "12:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 78068,
+          "isFirstPage": true,
+          "latitude": 21.13456941682526,
+          "longitude": -86.74524664878845,
+          "mainPhotoId": 484892426,
+          "name": "Krystal Cancun",
+          "optOutFromGalleryChanges": 0,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/484892426.jpg?k=180f0627afa884090150863ba592ed2857c6580b2ca0f0fc28dd5d11fe8d5ca1&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/484892426.jpg?k=180f0627afa884090150863ba592ed2857c6580b2ca0f0fc28dd5d11fe8d5ca1&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/484892426.jpg?k=180f0627afa884090150863ba592ed2857c6580b2ca0f0fc28dd5d11fe8d5ca1&o="
+          ],
+          "position": 3,
+          "priceBreakdown": {
+            "benefitBadges": [
+              {
+                "explanation": "Black Friday Deal",
+                "identifier": "Black Friday",
+                "text": "Black Friday Deal"
+              }
+            ],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 12,360",
+              "currency": "MXN",
+              "value": 12360.277763252161
+            },
+            "strikethroughPrice": {
+              "amountRounded": "MXN 24,435",
+              "currency": "MXN",
+              "value": 24435.428011781092
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 4,
+          "qualityClass": 0,
+          "rankingPosition": 3,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 1 bed",
+          "reviewCount": 2603,
+          "reviewScore": 7.8,
+          "reviewScoreWord": "Good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 3031130,
+        "accessibilityLabel": "Mayan Monkey Cancun - Social Hostel.\n4 out of 5 stars.\nThis is a Preferred property.\n8.6 Fabulous 3099 reviews.\n‎Zona Hotelera‬ • ‎9.4 km from centre‬\n‎150 m from beach‬.\nBlack Friday Deal.\n Private suite : 2 beds.\nPrice for 3 nights, 2 adults.\nOriginal price 26094 MXN. Current price 15350 MXN..\nIncludes taxes and charges.\nWe have 4 left at this price.",
+        "property": {
+          "accuratePropertyClass": 4,
+          "blockIds": [
+            "303113010_139006120_2_0_0"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "06:00",
+            "untilTime": "12:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 3031130,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "latitude": 21.130138133444405,
+          "longitude": -86.75025904448319,
+          "mainPhotoId": 789596499,
+          "name": "Mayan Monkey Cancun - Social Hostel",
+          "optOutFromGalleryChanges": 1,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/789596499.jpg?k=5392503aa0b6e08876db589d7996759433383a6b00a05f3a9013b9914703d45d&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/789596499.jpg?k=5392503aa0b6e08876db589d7996759433383a6b00a05f3a9013b9914703d45d&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/789596499.jpg?k=5392503aa0b6e08876db589d7996759433383a6b00a05f3a9013b9914703d45d&o="
+          ],
+          "position": 4,
+          "priceBreakdown": {
+            "benefitBadges": [
+              {
+                "explanation": "Black Friday Deal",
+                "identifier": "Black Friday",
+                "text": "Black Friday Deal"
+              }
+            ],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 15,350",
+              "currency": "MXN",
+              "value": 15350.073559687333
+            },
+            "strikethroughPrice": {
+              "amountRounded": "MXN 26,094",
+              "currency": "MXN",
+              "value": 26093.91782157113
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 4,
+          "qualityClass": 0,
+          "rankingPosition": 4,
+          "recommendedUnitsConfigurationLabel": "<b>Private suite</b>: 2 beds",
+          "reviewCount": 3099,
+          "reviewScore": 8.6,
+          "reviewScoreWord": "Fabulous",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 239897,
+        "accessibilityLabel": "Beachscape Kin Ha Villas & Suites.\n4 out of 5 stars.\nThis is a Preferred property.\n8.4 Very good 2871 reviews.\n‎Zona Hotelera‬ • ‎8.8 km from centre‬\n‎Beachfront‬.\n Hotel room : 2 beds.\nPrice for 3 nights, 2 adults.\n9010 MXN.\nIncludes taxes and charges.",
+        "property": {
+          "accuratePropertyClass": 4,
+          "blockIds": [
+            "23989701_0_2_0_0"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "23:30"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "11:30",
+            "untilTime": "12:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 239897,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "isTPI": true,
+          "latitude": 21.13531494936536,
+          "longitude": -86.75354272127151,
+          "mainPhotoId": 653205703,
+          "name": "Beachscape Kin Ha Villas & Suites",
+          "optOutFromGalleryChanges": 1,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/653205703.jpg?k=204c8683d33ba6816056a79ad0b0d930a73e0f57334a892548c0e3f637aa65fd&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/653205703.jpg?k=204c8683d33ba6816056a79ad0b0d930a73e0f57334a892548c0e3f637aa65fd&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/653205703.jpg?k=204c8683d33ba6816056a79ad0b0d930a73e0f57334a892548c0e3f637aa65fd&o="
+          ],
+          "position": 5,
+          "priceBreakdown": {
+            "benefitBadges": [],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 9,010",
+              "currency": "MXN",
+              "value": 9010.02946525417
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 4,
+          "qualityClass": 0,
+          "rankingPosition": 5,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 2 beds",
+          "reviewCount": 2871,
+          "reviewScore": 8.4,
+          "reviewScoreWord": "Very good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 390892,
+        "accessibilityLabel": "Hotel Plaza Caribe.\n3 out of 5 stars.\n7.4 Good 1145 reviews.\n‎In city centre‬\n‎2.5 km from beach‬.\nBlack Friday Deal.\n Hotel room : 2 beds.\nPrice for 3 nights, 2 adults.\nOriginal price 4800 MXN. Current price 3028 MXN..\nIncludes taxes and charges.\nFree cancellation.\nNo prepayment needed.",
+        "property": {
+          "accuratePropertyClass": 3,
+          "blockIds": [
+            "39089208_442140704_2_2_0"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "00:00",
+            "untilTime": "12:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "MXN",
+          "id": 390892,
+          "isFirstPage": true,
+          "latitude": 21.164592897898977,
+          "longitude": -86.82697355747223,
+          "mainPhotoId": 126071732,
+          "name": "Hotel Plaza Caribe",
+          "optOutFromGalleryChanges": 0,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/126071732.jpg?k=94d8757285d1351cef2fdc1f230d64c2f6e64ca2b2e37c1cd473ad64ad281c57&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/126071732.jpg?k=94d8757285d1351cef2fdc1f230d64c2f6e64ca2b2e37c1cd473ad64ad281c57&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/126071732.jpg?k=94d8757285d1351cef2fdc1f230d64c2f6e64ca2b2e37c1cd473ad64ad281c57&o="
+          ],
+          "position": 6,
+          "priceBreakdown": {
+            "benefitBadges": [
+              {
+                "explanation": "Black Friday Deal",
+                "identifier": "Black Friday",
+                "text": "Black Friday Deal"
+              }
+            ],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 3,028",
+              "currency": "MXN",
+              "value": 3027.9228
+            },
+            "strikethroughPrice": {
+              "amountRounded": "MXN 4,800",
+              "currency": "MXN",
+              "value": 4800.0162
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 3,
+          "qualityClass": 0,
+          "rankingPosition": 6,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 2 beds",
+          "reviewCount": 1145,
+          "reviewScore": 7.4,
+          "reviewScoreWord": "Good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 3833953,
+        "accessibilityLabel": "Royalton CHIC Cancun, An Autograph Collection All-Inclusive Resort - Adults Only.\n5 out of 5 stars.\nThis is a Preferred property.\n8.1 Very good 734 reviews.\n‎Zona Hotelera‬ • ‎9.3 km from centre‬\n‎Beachfront‬\n‎Sustainability certification‬.\nBlack Friday Deal.\nAll-Inclusive.\n Hotel room : 3 beds.\nPrice for 3 nights, 2 adults.\nOriginal price 42217 MXN. Current price 29637 MXN..\nIncludes taxes and charges.\nFree cancellation.",
+        "property": {
+          "accuratePropertyClass": 5,
+          "blockIds": [
+            "383395301_352224077_2_85_0_1387364"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "23:30"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "11:00",
+            "untilTime": "12:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 3833953,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "latitude": 21.12724931450178,
+          "longitude": -86.7522027733803,
+          "mainPhotoId": 186731545,
+          "name": "Royalton CHIC Cancun, An Autograph Collection All-Inclusive Resort - Adults Only",
+          "optOutFromGalleryChanges": 1,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/186731545.jpg?k=6a468076ce371b2fdb49b52b8333d8e36f27af805165e8d522238772a0ccd9f4&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/186731545.jpg?k=6a468076ce371b2fdb49b52b8333d8e36f27af805165e8d522238772a0ccd9f4&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/186731545.jpg?k=6a468076ce371b2fdb49b52b8333d8e36f27af805165e8d522238772a0ccd9f4&o="
+          ],
+          "position": 7,
+          "priceBreakdown": {
+            "benefitBadges": [
+              {
+                "explanation": "Black Friday Deal",
+                "identifier": "Black Friday",
+                "text": "Black Friday Deal"
+              }
+            ],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 29,637",
+              "currency": "MXN",
+              "value": 29636.534050352497
+            },
+            "strikethroughPrice": {
+              "amountRounded": "MXN 42,217",
+              "currency": "MXN",
+              "value": 42217.31042499063
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 5,
+          "qualityClass": 0,
+          "rankingPosition": 7,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 3 beds",
+          "reviewCount": 734,
+          "reviewScore": 8.1,
+          "reviewScoreWord": "Very good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 453162,
+        "accessibilityLabel": "NIZUC Resort & Spa.\n5 out of 5 stars.\nThis is a Preferred property.\n9.1 Superb 466 reviews.\n‎Zona Hotelera‬ • ‎15 km from centre‬\n‎Beachfront‬\n‎Sustainability certification‬.\n2 beds.\nPrice for 3 nights, 2 adults.\n42778 MXN.\nIncludes taxes and charges.\nFree cancellation.",
+        "property": {
+          "accuratePropertyClass": 5,
+          "blockIds": [
+            "0_0_2_0_0"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "00:00",
+            "untilTime": "12:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 453162,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "isTPI": true,
+          "latitude": 21.033715402164344,
+          "longitude": -86.78733587265015,
+          "mainPhotoId": 141121329,
+          "name": "NIZUC Resort & Spa",
+          "optOutFromGalleryChanges": 1,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/141121329.jpg?k=184bb8ae0c90319b2fc518b6e28a0749461a318763661ec88a385c5687c21f5a&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/141121329.jpg?k=184bb8ae0c90319b2fc518b6e28a0749461a318763661ec88a385c5687c21f5a&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/141121329.jpg?k=184bb8ae0c90319b2fc518b6e28a0749461a318763661ec88a385c5687c21f5a&o="
+          ],
+          "position": 8,
+          "priceBreakdown": {
+            "benefitBadges": [],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 42,778",
+              "currency": "MXN",
+              "value": 42778.25128895613
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 5,
+          "qualityClass": 0,
+          "rankingPosition": 8,
+          "recommendedUnitsConfigurationLabel": "2 beds",
+          "reviewCount": 466,
+          "reviewScore": 9.1,
+          "reviewScoreWord": "Superb",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 11152357,
+        "accessibilityLabel": "La Palma Beachfront Hotel Boutique.\n4 out of 5 stars.\n8.1 Very good 191 reviews.\n‎Zona Hotelera‬ • ‎9.5 km from centre‬\n‎Beachfront‬.\nMobile-only price.\n Hotel room : 2 beds.\nPrice for 3 nights, 2 adults.\nOriginal price 10775 MXN. Current price 7814 MXN..\nIncludes taxes and charges.\nWe have 1 left at this price.",
+        "property": {
+          "accuratePropertyClass": 4,
+          "blockIds": [
+            "1115235702_384422066_2_0_0_624820"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "22:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "08:30",
+            "untilTime": "11:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "MXN",
+          "id": 11152357,
+          "isFirstPage": true,
+          "latitude": 21.136706054232,
+          "longitude": -86.746670138185,
+          "mainPhotoId": 894588344,
+          "name": "La Palma Beachfront Hotel Boutique",
+          "optOutFromGalleryChanges": 1,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/894588344.jpg?k=99c3ecc32cac20afa44f62ee2aaac2b2fcb17b07a0b7a84aa1344fdfb7fff5db&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/894588344.jpg?k=99c3ecc32cac20afa44f62ee2aaac2b2fcb17b07a0b7a84aa1344fdfb7fff5db&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/894588344.jpg?k=99c3ecc32cac20afa44f62ee2aaac2b2fcb17b07a0b7a84aa1344fdfb7fff5db&o="
+          ],
+          "position": 9,
+          "priceBreakdown": {
+            "benefitBadges": [
+              {
+                "explanation": "Mobile-only price",
+                "identifier": "Mobile Rate",
+                "text": "Mobile-only price",
+                "variant": "constructive"
+              }
+            ],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 7,814",
+              "currency": "MXN",
+              "value": 7814.288
+            },
+            "strikethroughPrice": {
+              "amountRounded": "MXN 10,775",
+              "currency": "MXN",
+              "value": 10775.4
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 4,
+          "qualityClass": 0,
+          "rankingPosition": 9,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 2 beds",
+          "reviewCount": 191,
+          "reviewScore": 8.1,
+          "reviewScoreWord": "Very good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 324248,
+        "accessibilityLabel": "Comfort Inn Cancún Aeropuerto.\n4 out of 5 stars.\n7.1 Good 866 reviews.\n‎13.1 km from centre‬.\n Hotel room : 1 bed.\nPrice for 3 nights, 2 adults.\n2416 MXN.\nIncludes taxes and charges.",
+        "property": {
+          "accuratePropertyClass": 4,
+          "blockIds": [
+            "32424805_0_2_1_0"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "05:30",
+            "untilTime": "12:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "MXN",
+          "id": 324248,
+          "isFirstPage": true,
+          "isTPI": true,
+          "latitude": 21.04433733909079,
+          "longitude": -86.84973478317261,
+          "mainPhotoId": 229534861,
+          "name": "Comfort Inn Cancún Aeropuerto",
+          "optOutFromGalleryChanges": 0,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/229534861.jpg?k=731f93083b31befac4cb32558f0e8f3ef286511ae67772e00d6a2dea1e308acf&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/229534861.jpg?k=731f93083b31befac4cb32558f0e8f3ef286511ae67772e00d6a2dea1e308acf&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/229534861.jpg?k=731f93083b31befac4cb32558f0e8f3ef286511ae67772e00d6a2dea1e308acf&o="
+          ],
+          "position": 10,
+          "priceBreakdown": {
+            "benefitBadges": [],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 2,416",
+              "currency": "MXN",
+              "value": 2416.1705597646787
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 4,
+          "qualityClass": 0,
+          "rankingPosition": 10,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 1 bed",
+          "reviewCount": 866,
+          "reviewScore": 7.1,
+          "reviewScoreWord": "Good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 78143,
+        "accessibilityLabel": "Adhara Hacienda Cancun.\n4 out of 5 stars.\nThis is a Preferred property.\n8.5 Very good 4070 reviews.\n‎In city centre‬\n‎2 km from beach‬.\nBreakfast included.\n Hotel room : 1 bed.\nPrice for 3 nights, 2 adults.\n4434 MXN.\nIncludes taxes and charges.",
+        "property": {
+          "accuratePropertyClass": 4,
+          "blockIds": [
+            "7814306_0_2_1_0"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "00:00",
+            "untilTime": "13:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 78143,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "isTPI": true,
+          "latitude": 21.168384799238776,
+          "longitude": -86.82394266128546,
+          "mainPhotoId": 933775427,
+          "name": "Adhara Hacienda Cancun",
+          "optOutFromGalleryChanges": 1,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/933775427.jpg?k=68bd60ea9c6754f3f914987e880f55cf367bbfd789fdb110d6595e449d939476&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/933775427.jpg?k=68bd60ea9c6754f3f914987e880f55cf367bbfd789fdb110d6595e449d939476&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/933775427.jpg?k=68bd60ea9c6754f3f914987e880f55cf367bbfd789fdb110d6595e449d939476&o="
+          ],
+          "position": 11,
+          "priceBreakdown": {
+            "benefitBadges": [],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 4,434",
+              "currency": "MXN",
+              "value": 4433.922938956092
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 4,
+          "qualityClass": 0,
+          "rankingPosition": 11,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 1 bed",
+          "reviewCount": 4070,
+          "reviewScore": 8.5,
+          "reviewScoreWord": "Very good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 185872,
+        "accessibilityLabel": "Presidente InterContinental Cancun Resort by IHG.\n5 out of 5 stars.\nThis is a Preferred property.\n8.8 Fabulous 3421 reviews.\n‎Zona Hotelera‬ • ‎8.8 km from centre‬\n‎Beachfront‬.\nBlack Friday Deal.\n Hotel room : 2 beds.\nPrice for 3 nights, 2 adults.\nOriginal price 34675 MXN. Current price 21854 MXN..\nIncludes taxes and charges.\nFree cancellation.\nNo prepayment needed.",
+        "property": {
+          "accuratePropertyClass": 5,
+          "blockIds": [
+            "18587270_444118711_2_1_0_1305512"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "00:00",
+            "untilTime": "12:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 185872,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "latitude": 21.13500472822705,
+          "longitude": -86.75425887107849,
+          "mainPhotoId": 479692743,
+          "name": "Presidente InterContinental Cancun Resort by IHG",
+          "optOutFromGalleryChanges": 0,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/479692743.jpg?k=b8d65ddc14a5438c09d1390d41e0e22d7a131713c681e68ce7954ba1efebb13c&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/479692743.jpg?k=b8d65ddc14a5438c09d1390d41e0e22d7a131713c681e68ce7954ba1efebb13c&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/479692743.jpg?k=b8d65ddc14a5438c09d1390d41e0e22d7a131713c681e68ce7954ba1efebb13c&o="
+          ],
+          "position": 12,
+          "priceBreakdown": {
+            "benefitBadges": [
+              {
+                "explanation": "Black Friday Deal",
+                "identifier": "Black Friday",
+                "text": "Black Friday Deal"
+              }
+            ],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 21,854",
+              "currency": "MXN",
+              "value": 21853.75803737046
+            },
+            "strikethroughPrice": {
+              "amountRounded": "MXN 34,675",
+              "currency": "MXN",
+              "value": 34675.49757555129
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 5,
+          "qualityClass": 0,
+          "rankingPosition": 12,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 2 beds",
+          "reviewCount": 3421,
+          "reviewScore": 8.8,
+          "reviewScoreWord": "Fabulous",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 14469392,
+        "accessibilityLabel": "Hola Donceles Suites.\n4 out of 5 for property rating.\n8.6 Fabulous 229 reviews.\n‎Zona Hotelera‬ • ‎2.7 km from centre‬\n‎0.8 km from beach‬.\nMobile-only price.\n Private suite : 1 bed.\nPrice for 3 nights, 2 adults.\nOriginal price 4747 MXN. Current price 4272 MXN..\nIncludes taxes and charges.\nFree cancellation.\nWe have 6 left at this price.",
+        "property": {
+          "accuratePropertyClass": 0,
+          "blockIds": [
+            "1446939207_444460020_2_0_0"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "22:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "06:00",
+            "untilTime": "11:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "MXN",
+          "id": 14469392,
+          "isFirstPage": true,
+          "latitude": 21.1773646,
+          "longitude": -86.8146149,
+          "mainPhotoId": 704794321,
+          "name": "Hola Donceles Suites",
+          "optOutFromGalleryChanges": 0,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/704794321.jpg?k=46df50db6bba237fa2ca4c0b7c8bb2b9bc8cdc0ae0f390955d920401a4ce6152&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/704794321.jpg?k=46df50db6bba237fa2ca4c0b7c8bb2b9bc8cdc0ae0f390955d920401a4ce6152&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/704794321.jpg?k=46df50db6bba237fa2ca4c0b7c8bb2b9bc8cdc0ae0f390955d920401a4ce6152&o="
+          ],
+          "position": 13,
+          "priceBreakdown": {
+            "benefitBadges": [
+              {
+                "explanation": "Mobile-only price",
+                "identifier": "Mobile Rate",
+                "text": "Mobile-only price",
+                "variant": "constructive"
+              }
+            ],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 4,272",
+              "currency": "MXN",
+              "value": 4272.318
+            },
+            "strikethroughPrice": {
+              "amountRounded": "MXN 4,747",
+              "currency": "MXN",
+              "value": 4747.02
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 0,
+          "qualityClass": 4,
+          "rankingPosition": 13,
+          "recommendedUnitsConfigurationLabel": "<b>Private suite</b>: 1 bed",
+          "reviewCount": 229,
+          "reviewScore": 8.6,
+          "reviewScoreWord": "Fabulous",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 41787,
+        "accessibilityLabel": "Occidental Costa Cancún - All Inclusive.\n4 out of 5 stars.\nThis is a Preferred property.\n8.5 Very good 1902 reviews.\n‎Zona Hotelera‬ • ‎5 km from centre‬\n‎Beachfront‬\n‎Sustainability certification‬.\nAll-Inclusive.\n Hotel room : 2 beds.\nPrice for 3 nights, 2 adults.\nOriginal price 16401 MXN. Current price 12049 MXN..\nIncludes taxes and charges.",
+        "property": {
+          "accuratePropertyClass": 4,
+          "blockIds": [
+            "4178701_215539158_2_85_0_433301"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "11:00",
+            "untilTime": "11:30"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 41787,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "latitude": 21.144913971225126,
+          "longitude": -86.78968816995621,
+          "mainPhotoId": 889644455,
+          "name": "Occidental Costa Cancún - All Inclusive",
+          "optOutFromGalleryChanges": 1,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/889644455.jpg?k=29ba33c8bc8c57049c79162f1a0a5f45919427eda3dcfa279a2e8d5ad350410b&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/889644455.jpg?k=29ba33c8bc8c57049c79162f1a0a5f45919427eda3dcfa279a2e8d5ad350410b&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/889644455.jpg?k=29ba33c8bc8c57049c79162f1a0a5f45919427eda3dcfa279a2e8d5ad350410b&o="
+          ],
+          "position": 14,
+          "priceBreakdown": {
+            "benefitBadges": [],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 12,049",
+              "currency": "MXN",
+              "value": 12049.298687194021
+            },
+            "strikethroughPrice": {
+              "amountRounded": "MXN 16,401",
+              "currency": "MXN",
+              "value": 16400.53464688038
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 4,
+          "qualityClass": 0,
+          "rankingPosition": 14,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 2 beds",
+          "reviewCount": 1902,
+          "reviewScore": 8.5,
+          "reviewScoreWord": "Very good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 7982778,
+        "accessibilityLabel": "Hilton Garden Inn Cancun Airport.\n4 out of 5 stars.\nThis is a Preferred property.\n8.1 Very good 4154 reviews.\n‎14 km from centre‬\n‎Sustainability certification‬.\n1 bed.\nPrice for 3 nights, 2 adults.\n9296 MXN.\nIncludes taxes and charges.\nFree cancellation.\nNo prepayment needed.",
+        "property": {
+          "accuratePropertyClass": 4,
+          "blockIds": [
+            "798277802_413860483_2_41_0"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "00:00",
+            "untilTime": "12:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 7982778,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "latitude": 21.040561721601172,
+          "longitude": -86.87088628311157,
+          "mainPhotoId": 474973660,
+          "name": "Hilton Garden Inn Cancun Airport",
+          "optOutFromGalleryChanges": 1,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/474973660.jpg?k=ece13f69ad6cffe7b77f799c856b49341367f8ba0edd63babf1e390959a7603d&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/474973660.jpg?k=ece13f69ad6cffe7b77f799c856b49341367f8ba0edd63babf1e390959a7603d&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/474973660.jpg?k=ece13f69ad6cffe7b77f799c856b49341367f8ba0edd63babf1e390959a7603d&o="
+          ],
+          "position": 15,
+          "priceBreakdown": {
+            "benefitBadges": [],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 9,296",
+              "currency": "MXN",
+              "value": 9295.719631606458
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 4,
+          "qualityClass": 0,
+          "rankingPosition": 15,
+          "recommendedUnitsConfigurationLabel": "1 bed",
+          "reviewCount": 4154,
+          "reviewScore": 8.1,
+          "reviewScoreWord": "Very good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 14870258,
+        "accessibilityLabel": "Hyatt Place Cancun Airport.\n4 out of 5 stars.\nThis is a Preferred property.\n8.4 Very good 861 reviews.\n‎13.3 km from centre‬.\n Hotel room : 1 bed.\nPrice for 3 nights, 2 adults.\n7166 MXN.\nIncludes taxes and charges.",
+        "property": {
+          "accuratePropertyClass": 4,
+          "blockIds": [
+            "1487025804_420203498_2_2_0_1428904"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "00:00",
+            "untilTime": "12:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 14870258,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "latitude": 21.042561,
+          "longitude": -86.850394,
+          "mainPhotoId": 793874111,
+          "name": "Hyatt Place Cancun Airport",
+          "optOutFromGalleryChanges": 1,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/793874111.jpg?k=0c48df82a03bdd56fc7f82e773e7737aea646440ff86bbb1848709bc2decc8e4&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/793874111.jpg?k=0c48df82a03bdd56fc7f82e773e7737aea646440ff86bbb1848709bc2decc8e4&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/793874111.jpg?k=0c48df82a03bdd56fc7f82e773e7737aea646440ff86bbb1848709bc2decc8e4&o="
+          ],
+          "position": 16,
+          "priceBreakdown": {
+            "benefitBadges": [],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 7,166",
+              "currency": "MXN",
+              "value": 7166.052802036078
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 4,
+          "qualityClass": 0,
+          "rankingPosition": 16,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 1 bed",
+          "reviewCount": 861,
+          "reviewScore": 8.4,
+          "reviewScoreWord": "Very good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 1851620,
+        "accessibilityLabel": "Moon Palace The Grand Cancun All Inclusive.\n5 out of 5 stars.\nThis is a Preferred property.\n8.3 Very good 383 reviews.\n‎19.3 km from centre‬.\nMobile-only price\nSecret Deal.\nAll-Inclusive.\n Hotel room : 2 beds.\nPrice for 3 nights, 2 adults.\nOriginal price 78280 MXN. Current price 52354 MXN..\nIncludes taxes and charges.",
+        "property": {
+          "accuratePropertyClass": 5,
+          "blockIds": [
+            "185162002_174349942_2_85_0_1242925"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "00:00",
+            "untilTime": "12:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 1851620,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "latitude": 20.9882398552073,
+          "longitude": -86.8292408795623,
+          "mainPhotoId": 692230954,
+          "name": "Moon Palace The Grand Cancun All Inclusive",
+          "optOutFromGalleryChanges": 1,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/692230954.jpg?k=5b1ca1c8e8290d93bd969ce665e27f11b381bf7fd46374a44bed8f49c700609d&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/692230954.jpg?k=5b1ca1c8e8290d93bd969ce665e27f11b381bf7fd46374a44bed8f49c700609d&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/692230954.jpg?k=5b1ca1c8e8290d93bd969ce665e27f11b381bf7fd46374a44bed8f49c700609d&o="
+          ],
+          "position": 17,
+          "priceBreakdown": {
+            "benefitBadges": [
+              {
+                "explanation": "Mobile-only price",
+                "identifier": "Mobile Rate",
+                "text": "Mobile-only price",
+                "variant": "constructive"
+              },
+              {
+                "explanation": "Secret Deal",
+                "identifier": "Secret Deal",
+                "text": "Secret Deal",
+                "variant": "constructive"
+              }
+            ],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 52,354",
+              "currency": "MXN",
+              "value": 52353.59547425166
+            },
+            "strikethroughPrice": {
+              "amountRounded": "MXN 78,280",
+              "currency": "MXN",
+              "value": 78279.66823215572
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 5,
+          "qualityClass": 0,
+          "rankingPosition": 17,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 2 beds",
+          "reviewCount": 383,
+          "reviewScore": 8.3,
+          "reviewScoreWord": "Very good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 6822317,
+        "accessibilityLabel": "Riu Palace Las Americas - All Inclusive - Adults Only.\n5 out of 5 stars.\nThis is a Preferred property.\n8.4 Very good 750 reviews.\n‎Zona Hotelera‬ • ‎9 km from centre‬\n‎Beachfront‬\n‎Sustainability certification‬.\nAll-Inclusive.\n Hotel room : 2 beds.\nPrice for 3 nights, 2 adults.\nOriginal price 44742 MXN. Current price 29047 MXN..\nIncludes taxes and charges.\nFree cancellation.\nNo prepayment needed.",
+        "property": {
+          "accuratePropertyClass": 5,
+          "blockIds": [
+            "682231702_396819315_2_85_0_111647"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "08:00",
+            "untilTime": "12:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 6822317,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "latitude": 21.138741,
+          "longitude": -86.750327,
+          "mainPhotoId": 274793194,
+          "name": "Riu Palace Las Americas - All Inclusive - Adults Only",
+          "optOutFromGalleryChanges": 0,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/274793194.jpg?k=55fbf8b227ae65a7e8459bf627d5bb3734909a01c41e5678e3bd30390357fc66&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/274793194.jpg?k=55fbf8b227ae65a7e8459bf627d5bb3734909a01c41e5678e3bd30390357fc66&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/274793194.jpg?k=55fbf8b227ae65a7e8459bf627d5bb3734909a01c41e5678e3bd30390357fc66&o="
+          ],
+          "position": 18,
+          "priceBreakdown": {
+            "benefitBadges": [],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 29,047",
+              "currency": "MXN",
+              "value": 29047.270519924477
+            },
+            "strikethroughPrice": {
+              "amountRounded": "MXN 44,742",
+              "currency": "MXN",
+              "value": 44742.019525359945
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 5,
+          "qualityClass": 0,
+          "rankingPosition": 18,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 2 beds",
+          "reviewCount": 750,
+          "reviewScore": 8.4,
+          "reviewScoreWord": "Very good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      },
+      {
+        "hotel_id": 378169,
+        "accessibilityLabel": "Secrets The Vine Cancun - All Inclusive Adults Only.\n5 out of 5 stars.\nThis is a Preferred property.\n8.5 Very good 472 reviews.\n‎Zona Hotelera‬ • ‎10.3 km from centre‬\n‎Beachfront‬\n‎Sustainability certification‬.\nBlack Friday Deal.\nAll-Inclusive.\n Hotel room : 2 beds.\nPrice for 3 nights, 2 adults.\nOriginal price 58985 MXN. Current price 38341 MXN..\nIncludes taxes and charges.\nFree cancellation.",
+        "property": {
+          "accuratePropertyClass": 5,
+          "blockIds": [
+            "37816922_426000694_2_85_0"
+          ],
+          "checkin": {
+            "fromTime": "15:00",
+            "untilTime": "00:00"
+          },
+          "checkinDate": "2027-03-12",
+          "checkout": {
+            "fromTime": "00:00",
+            "untilTime": "12:00"
+          },
+          "checkoutDate": "2027-03-15",
+          "countryCode": "mx",
+          "currency": "USD",
+          "id": 378169,
+          "isFirstPage": true,
+          "isPreferred": true,
+          "latitude": 21.09029607893638,
+          "longitude": -86.77070081233978,
+          "mainPhotoId": 186829877,
+          "name": "Secrets The Vine Cancun - All Inclusive Adults Only",
+          "optOutFromGalleryChanges": 0,
+          "photoUrls": [
+            "https://cf.bstatic.com/xdata/images/hotel/square500/186829877.jpg?k=e51fa5340798097068766fb36261854ff49ca2e9e4aa1534047f4055684c0e64&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square1024/186829877.jpg?k=e51fa5340798097068766fb36261854ff49ca2e9e4aa1534047f4055684c0e64&o=",
+            "https://cf.bstatic.com/xdata/images/hotel/square2000/186829877.jpg?k=e51fa5340798097068766fb36261854ff49ca2e9e4aa1534047f4055684c0e64&o="
+          ],
+          "position": 19,
+          "priceBreakdown": {
+            "benefitBadges": [
+              {
+                "explanation": "Black Friday Deal",
+                "identifier": "Black Friday",
+                "text": "Black Friday Deal"
+              }
+            ],
+            "chargesInfo": "Includes taxes and charges",
+            "grossPrice": {
+              "amountRounded": "MXN 38,341",
+              "currency": "MXN",
+              "value": 38340.52855065383
+            },
+            "strikethroughPrice": {
+              "amountRounded": "MXN 58,985",
+              "currency": "MXN",
+              "value": 58985.27939584435
+            },
+            "taxExceptions": []
+          },
+          "propertyClass": 5,
+          "qualityClass": 0,
+          "rankingPosition": 19,
+          "recommendedUnitsConfigurationLabel": "<b>Hotel room</b>: 2 beds",
+          "reviewCount": 472,
+          "reviewScore": 8.5,
+          "reviewScoreWord": "Very good",
+          "ufi": -1655011,
+          "wishlistName": "Cancún"
+        }
+      }
+    ],
+    "meta": [
+      {
+        "title": "868 properties"
+      }
+    ],
+    "appear": [
+      {
+        "component": {
+          "props": {
+            "content": {
+              "props": {
+                "fitContentWidth": true,
+                "items": [
+                  {
+                    "props": {
+                      "component": {
+                        "props": {
+                          "items": [
+                            {
+                              "props": {
+                                "text": [
+                                  {
+                                    "font": "body_2",
+                                    "text": "Commission paid and other benefits may affect an accommodation's ranking."
+                                  },
+                                  {
+                                    "color": "foreground",
+                                    "font": "strong_2",
+                                    "text": "  "
+                                  },
+                                  {
+                                    "color": "action_foreground",
+                                    "font": "body_2",
+                                    "linkActions": [
+                                      {
+                                        "props": {
+                                          "url": "booking://webview?url=https%3A%2F%2Fm.booking.com%2Fgeneral.en.html%3Faid%3D332731%3Btmpl%3Ddocs%2Fterms-and-conditions"
+                                        }
+                                      }
+                                    ],
+                                    "text": "Find out more"
+                                  }
+                                ]
+                              }
+                            }
+                          ],
+                          "spacing": "spacing_half"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "props": {}
+                  },
+                  {
+                    "props": {
+                      "component": {
+                        "props": {
+                          "accessibilityLabel": "Dismiss ranking information banner",
+                          "icon": "close",
+                          "tertiaryTintedColor": "foreground",
+                          "variant": "tertiary_tinted"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "fill": true
+          }
+        },
+        "id": "cma"
+      },
+      {
+        "contentUrl": "https://mobile-apps.booking.com/json/mobile.saba?route_path=saba-chat-entrypoint&arrival_date=2027-03-12&categories_filter_additional_data=&departure_date=2027-03-15&dest_ids=-1655011&exposure_api_version=2.59&flex_window=0&generate_map_bounding_box=1&guest_qty=2&include_bh_quality_classification=1&include_genius_badge=1&include_rtb=1&include_ski_information=1&location_source=autocomplete&mobile_saba_variant=1&outcome=search_results&reason=new_search&room_qty=1&sb_calendar_open=1&search_type=city&selected_filter_sources=&sort_by=auto&sort_by_source=sort_options&source=startup_page&travel_purpose=&units=metric&offset=0&affiliate_id=332731&attribution_affiliate_id=332731&currency_code=MXN&device_id=ce03b4166123fc7739687a7183441a50&distance_unit=metric&languagecode=en&min_saba_version=31&network_type=wifi&notification_auth_status=3&saba_version=179&screen_density=3&temperature_unit=c&user_os=26.6&user_version=69.4-iphone&categories_filter=price%3A%3AMXN-min-max&page=search-results"
+      },
+      {
+        "component": {
+          "props": {
+            "component": {
+              "props": {
+                "text": "Get instant access to our Genius loyalty programme and enjoy discounts at properties worldwide.",
+                "title": "Sign in and save money"
+              }
+            },
+            "id": "signin_now"
+          }
+        },
+        "label": "Sign in and save money\nGet instant access to our Genius loyalty programme and enjoy discounts at properties worldwide."
+      },
+      {
+        "component": {
+          "props": {
+            "text": "Properties with these icons have been awarded Booking.com's quality rating for homes",
+            "title": ""
+          }
+        },
+        "id": "banner_qualityrating"
+      },
+      {
+        "component": {
+          "props": {
+            "component": {
+              "props": {
+                "contentUrl": "https://mobile-apps.booking.com/json/mobile.saba?route_path=cross-sell&arrival_date=2027-03-12&categories_filter_additional_data=&departure_date=2027-03-15&dest_ids=-1655011&exposure_api_version=2.59&flex_window=0&generate_map_bounding_box=1&guest_qty=2&include_bh_quality_classification=1&include_genius_badge=1&include_rtb=1&include_ski_information=1&location_source=autocomplete&mobile_saba_variant=1&outcome=search_results&reason=new_search&room_qty=1&sb_calendar_open=1&search_type=city&selected_filter_sources=&sort_by=auto&sort_by_source=sort_options&source=startup_page&travel_purpose=&units=metric&offset=0&affiliate_id=332731&attribution_affiliate_id=332731&currency_code=MXN&device_id=ce03b4166123fc7739687a7183441a50&distance_unit=metric&languagecode=en&min_saba_version=31&network_type=wifi&notification_auth_status=3&saba_version=179&screen_density=3&temperature_unit=c&user_os=26.6&user_version=69.4-iphone&categories_filter=price%3A%3AMXN-min-max&component_id=attractions_cross_sell",
+                "method": "post",
+                "payload": {
+                  "header_override": {
+                    "X-Booking-Affiliate-Id": 332731,
+                    "X-Booking-CCXP-Version": "2.59",
+                    "X-Booking-Deeplink-Affiliate-Id": 0
+                  },
+                  "placements": [
+                    {
+                      "destination_location": {
+                        "ufi": -1655011,
+                        "cc1": "mx"
+                      },
+                      "accommodation_context": {
+                        "adults": 2,
+                        "check_in": "2027-03-12",
+                        "check_out": "2027-03-15",
+                        "children": []
+                      },
+                      "client_id": "c4e1f6cb-e51d-4afd-a52f-fc62348fd61b",
+                      "page": "ACCOMMODATION_SEARCH_RESULTS",
+                      "placement_name": "IN_FEED_ATTRACTION_BANNER"
+                    }
+                  ],
+                  "screen_width": 1,
+                  "currency_code": "MXN",
+                  "language_code": "en",
+                  "display_mode": "STANDARD"
+                }
+              }
+            },
+            "id": "attractions_cross_sell"
+          }
+        }
+      }
+    ]
+  }
+}

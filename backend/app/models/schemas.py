@@ -30,3 +30,36 @@ class WeatherResponse(BaseModel):
     source: str          # "cache" | "api"
     count: int
     data: list[DailyWeather]
+
+
+class FlightSummary(BaseModel):
+    """Versión resumida para listados (sin segments ni token)."""
+    origin: str
+    destination: str
+    departDate: str
+    flightKey: str
+    airline: dict
+    flightNumber: str
+    stops: int
+    durationMinutes: int
+    departTime: str
+    arrivalTime: str
+    currency: str
+    price: float
+    priceRounded: float | None = None
+    priceBeforeDiscount: float | None = None
+    badges: list[str] = []
+    fareName: str | None = None
+    hasCheckedBaggageIncluded: bool
+    checkedBaggagePrice: float | None = None
+    flexibleTicketPrice: float | None = None
+
+
+class FlightsResponse(BaseModel):
+    origin: str
+    destination: str
+    departDate: str
+    source: str
+    count: int
+    aggregation: dict | None = None
+    flights: list[FlightSummary]
