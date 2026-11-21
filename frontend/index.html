@@ -100,6 +100,11 @@
       </div>
     </section>
 
+    <!-- Después de <section id="searchResults"> -->
+    <section id="adminStats" class="hidden bg-white rounded-2xl shadow p-6">
+      <h2 class="text-xl font-semibold mb-4">📊 Estadísticas por pipeline (actualizadas por Airflow)</h2>
+      <div id="statsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </section>
     <!-- Aviso -->
     <section id="notice" class="hidden bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-800"></section>
   </main>
@@ -249,6 +254,29 @@
           <div class="text-xs text-blue-500 mt-1">💧 ${m.precipMm}mm</div>
         </div>
       `).join('');
+    }
+
+    async function loadAdminStats() {
+      try {
+        const r = await fetch(`${API}/api/admin/stats`);
+        const stats = await r.json();
+        if (!stats.length) return;
+        document.getElementById('adminStats').classList.remove('hidden');
+        document.getElementById('statsGrid').innerHTML = stats.map(s => {
+          if (s.type === 'flight') {
+            const d = s._id;
+            return `<div class="border rounded-xl p-3 text-sm">
+              <div class="font-medium">✈️ ${d.origin} → ${d.destination} · ${d.date}</div>
+              <div class="text-xs text-slate-500 mt-1">${s.count} vuelos · desde ${money(s.minPrice)} · aerolíneas: ${(s.airlines || []).join(', ')}</div>
+            </div>`;
+          }
+          const d = s._id;
+          return `<div class="border rounded-xl p-3 text-sm">
+            <div class="font-medium">🏨 ${d.destination} · ${d.checkin} → ${d.checkout}</div>
+            <div class="text-xs text-slate-500 mt-1">${s.count} hoteles · desde ${money(s.minPrice)} · ${s.currencyMismatches || 0} con fix de moneda</div>
+          </div>`;
+        }).join('');
+      } catch {}
     }
 
     (async () => {
@@ -494,6 +522,8 @@
       const data = await r.json();
       renderSearchResults(data);
     }
+
+    loadAdminStats();
     })();
   </script>
 </body>

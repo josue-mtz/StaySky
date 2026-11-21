@@ -7,7 +7,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.config import settings
 from app.db import ensure_indexes
-from app.routes import cities, flights, hotels, search, weather
+from app.routes import admin, cities, flights, hotels, search, weather
 
 client = AsyncIOMotorClient(settings.mongo_url)
 
@@ -31,7 +31,7 @@ app.include_router(weather.router)
 app.include_router(flights.router)
 app.include_router(hotels.router)
 app.include_router(search.router)
-
+app.include_router(admin.router)
 
 @app.get("/health", tags=["infra"])
 async def health():
