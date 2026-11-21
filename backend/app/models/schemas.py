@@ -93,3 +93,56 @@ class HotelsResponse(BaseModel):
     count: int
     currencyMismatches: int = 0
     hotels: list[HotelSummary]
+
+
+class WeatherSummary(BaseModel):
+    month: str
+    monthName: str
+    tempMaxC: float
+    tempMinC: float
+    precipMm: float
+    windKmh: float
+    daysAnalyzed: int
+    score: dict
+
+
+class SearchRequest(BaseModel):
+    origin: str = Field(..., min_length=3, max_length=3)
+    destination: str = Field(..., min_length=3, max_length=3)
+    departDate: str = Field(..., pattern=r"^\d{4}-\d{2}-\d{2}$")
+    budget: float = Field(15000, gt=0, description="Presupuesto total en MXN")
+    weatherPref: str = Field("warm", pattern=r"^(cold|mild|warm)$")
+    checkin: str | None = None
+    checkout: str | None = None
+
+
+class ScoredFlight(BaseModel):
+    flight: FlightSummary
+    priceScore: float
+    weatherScore: float
+    finalScore: float
+
+
+class ScoredHotel(BaseModel):
+    hotel: HotelSummary
+    priceScore: float
+    weatherScore: float
+    finalScore: float
+
+
+class SearchResponse(BaseModel):
+    origin: str
+    destination: str
+    destName: str
+    departDate: str
+    weatherPref: str
+    budget: float
+    flightBudget: float
+    hotelBudget: float
+    weather: WeatherSummary | None
+    topFlights: list[ScoredFlight]
+    topHotels: list[ScoredHotel]
+    recommendedFlight: ScoredFlight | None
+    recommendedHotel: ScoredHotel | None
+    tripScore: float | None
+    warnings: list[str] = []

@@ -37,7 +37,15 @@
           <label class="block text-sm font-medium mb-1">Presupuesto (MXN)</label>
           <input type="number" name="budget" value="5000" class="w-full border rounded-lg px-3 py-2" />
         </div>
-        <button class="md:col-span-4 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium">
+                <div>
+          <label class="block text-sm font-medium mb-1">Clima</label>
+          <select name="weatherPref" class="w-full border rounded-lg px-3 py-2">
+            <option value="warm">Cálido (25–32°C)</option>
+            <option value="mild">Templado (15–24°C)</option>
+            <option value="cold">Frío (5–15°C)</option>
+          </select>
+        </div>
+        <button class="md:col-span-5 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium">
           Buscar
         </button>
       </form>
@@ -68,6 +76,28 @@
         <span id="hotelsMeta" class="text-xs text-slate-400"></span>
       </div>
       <div id="hotelsList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+    </section>
+
+    <!-- Resultado de búsqueda unificada -->
+    <section id="searchResults" class="hidden space-y-6">
+      <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-lg p-6 text-white">
+        <p class="text-blue-100 text-sm mb-1">Viaje recomendado</p>
+        <h2 class="text-2xl font-bold mb-3" id="srDest"></h2>
+        <div class="flex items-end gap-4">
+          <div>
+            <div class="text-5xl font-bold" id="srTripScore">—</div>
+            <div class="text-blue-100 text-xs mt-1">/100 en total</div>
+          </div>
+          <div class="text-sm text-blue-100 pb-2" id="srTripDetail"></div>
+        </div>
+      </div>
+
+      <div id="srWeatherCard" class="hidden bg-white rounded-2xl shadow p-6"></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div id="srFlightsCard" class="bg-white rounded-2xl shadow p-6"></div>
+        <div id="srHotelsCard" class="bg-white rounded-2xl shadow p-6"></div>
+      </div>
     </section>
 
     <!-- Aviso -->
@@ -224,7 +254,7 @@
     (async () => {
       await checkHealth();
       await loadCities();
-          // ---------- HOTELES ----------
+    // ---------- HOTELES ----------
     function starHtml(n) {
       if (!n) return '';
       return '⭐'.repeat(n);
@@ -312,7 +342,158 @@
         loadFlights(iata, date),
         loadHotels(iata, date),
       ]);
+      await runUnifiedSearch();
     });
+
+    // ---------- BÚSQUEDA UNIFICADA CON SCORE ----------
+    const PREF_LABEL = { warm: 'cálido', mild: 'templado', cold: 'frío' };
+    const SCORE_COLOR = (n) => n >= 80 ? 'text-green-400'
+                          : n >= 60 ? 'text-blue-200'
+                          : n >= 40 ? 'text-amber-300'
+                          : 'text-red-400';
+
+    function scoreBar(n) {
+      const color = n >= 80 ? 'bg-green-500'
+                  : n >= 60 ? 'bg-blue-500'
+                  : n >= 40 ? 'bg-amber-500'
+                  : 'bg-red-500';
+      return `<div class="w-full bg-slate-200 rounded-full h-1.5 mt-1">
+        <div class="${color} h-1.5 rounded-full" style="width:${n}%"></div>
+      </div>`;
+    }
+
+    function renderSearchResults(data) {
+      const panel = document.getElementById('searchResults');
+      panel.classList.remove('hidden');
+
+      document.getElementById('srDest').textContent =
+        `${data.destName} (${data.destination}) · ${data.departDate}`;
+      document.getElementById('srTripScore').textContent =
+        data.tripScore != null ? data.tripScore : '—';
+      document.getElementById('srTripScore').className =
+        `text-5xl font-bold ${SCORE_COLOR(data.tripScore || 0)}`;
+      document.getElementById('srTripDetail').innerHTML =
+        `Preferencia: <b>${PREF_LABEL[data.weatherPref]}</b><br>` +
+        `Presupuesto: <b>$${data.budget.toLocaleString('es-MX')}</b> MXN<br>` +
+        `Reparto: vuelo $${data.flightBudget.toLocaleString('es-MX')} · hotel $${data.hotelBudget.toLocaleString('es-MX')}`;
+
+      // Clima
+      const wCard = document.getElementById('srWeatherCard');
+      if (data.weather) {
+        const w = data.weather;
+        wCard.classList.remove('hidden');
+        wCard.innerHTML = `
+          <h3 class="text-lg font-semibold mb-3">🌡️ Clima típico de ${w.monthName} en ${data.destName}</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div><div class="text-slate-500 text-xs">Temp. máxima</div><div class="text-xl font-bold">${w.tempMaxC}°C</div></div>
+            <div><div class="text-slate-500 text-xs">Temp. mínima</div><div class="text-xl font-bold">${w.tempMinC}°C</div></div>
+            <div><div class="text-slate-500 text-xs">Lluvia</div><div class="text-xl font-bold">${w.precipMm}mm</div></div>
+            <div><div class="text-slate-500 text-xs">Viento</div><div class="text-xl font-bold">${w.windKmh}km/h</div></div>
+          </div>
+          <div class="mt-4 p-3 bg-slate-50 rounded-lg">
+            <div class="flex justify-between text-sm mb-1">
+              <span>Score climático para <b>${PREF_LABEL[data.weatherPref]}</b></span>
+              <span class="font-bold">${w.score.total}/100</span>
+            </div>
+            ${scoreBar(w.score.total)}
+            <div class="grid grid-cols-3 gap-2 text-xs text-slate-500 mt-2">
+              <div>🌡️ Temp: ${w.score.temp_score}</div>
+              <div>💧 Lluvia: ${w.score.rain_score}</div>
+              <div>💨 Viento: ${w.score.wind_score}</div>
+            </div>
+          </div>
+          <p class="text-xs text-slate-400 mt-2">Basado en ${w.daysAnalyzed} días históricos (2023 como proxy estacional)</p>
+        `;
+      } else {
+        wCard.classList.add('hidden');
+      }
+
+      // Vuelos top 3
+      const fCard = document.getElementById('srFlightsCard');
+      if (data.topFlights.length) {
+        fCard.innerHTML = `<h3 class="text-lg font-semibold mb-3">✈️ Top 3 vuelos por score</h3>` +
+          data.topFlights.map((sf, i) => {
+            const f = sf.flight;
+            return `
+              <div class="border rounded-xl p-3 mb-2 ${i === 0 ? 'border-blue-500 bg-blue-50' : ''}">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <div class="font-semibold text-sm">${f.airline.name || f.airline.code} · ${f.flightNumber}</div>
+                    <div class="text-xs text-slate-500">${hhmm(f.departTime)} → ${hhmm(f.arrivalTime)} · ${fmtDuration(f.durationMinutes)} · ${f.stops === 0 ? 'Directo' : f.stops + ' escala(s)'}</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-lg font-bold text-blue-700">${money(f.price)}</div>
+                    <div class="text-xs font-bold ${SCORE_COLOR(sf.finalScore)}" style="color:${sf.finalScore>=80?'#16a34a':sf.finalScore>=60?'#2563eb':sf.finalScore>=40?'#d97706':'#dc2626'}">Score: ${sf.finalScore}</div>
+                  </div>
+                </div>
+                ${scoreBar(sf.finalScore)}
+              </div>
+            `;
+          }).join('');
+      } else {
+        fCard.innerHTML = `<h3 class="text-lg font-semibold mb-3">✈️ Vuelos</h3><p class="text-slate-400 text-sm">Sin vuelos cacheados para esta ruta/fecha.</p>`;
+      }
+
+      // Hoteles top 3
+      const hCard = document.getElementById('srHotelsCard');
+      if (data.topHotels.length) {
+        hCard.innerHTML = `<h3 class="text-lg font-semibold mb-3">🏨 Top 3 hoteles por score</h3>` +
+          data.topHotels.map((sh, i) => {
+            const h = sh.hotel;
+            return `
+              <div class="border rounded-xl p-3 mb-2 ${i === 0 ? 'border-blue-500 bg-blue-50' : ''}">
+                <div class="flex justify-between items-start">
+                  <div class="flex-1">
+                    <div class="font-semibold text-sm">${h.name}</div>
+                    <div class="text-xs text-slate-500">${'⭐'.repeat(h.stars || 0)} · ${h.nights} noches · ${h.reviewScore ? h.reviewScore.toFixed(1) + '/10' : ''}</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-lg font-bold text-blue-700">${money(h.price)}</div>
+                    <div class="text-xs text-slate-500">${money(h.pricePerNight)}/noche</div>
+                    <div class="text-xs font-bold" style="color:${sh.finalScore>=80?'#16a34a':sh.finalScore>=60?'#2563eb':sh.finalScore>=40?'#d97706':'#dc2626'}">Score: ${sh.finalScore}</div>
+                  </div>
+                </div>
+                ${scoreBar(sh.finalScore)}
+              </div>
+            `;
+          }).join('');
+      } else {
+        hCard.innerHTML = `<h3 class="text-lg font-semibold mb-3">🏨 Hoteles</h3><p class="text-slate-400 text-sm">Sin hoteles cacheados para estas fechas.</p>`;
+      }
+
+      // Avisos
+      if (data.warnings.length) {
+        const notice = document.getElementById('notice');
+        notice.innerHTML = '⚠️ ' + data.warnings.join('<br>⚠️ ');
+        notice.classList.remove('hidden');
+      }
+    }
+
+    async function runUnifiedSearch() {
+      const origin = document.getElementById('origin').value;
+      const destination = document.getElementById('destination').value;
+      const departDate = document.getElementById('departDate').value;
+      const budget = parseFloat(document.querySelector('[name=budget]').value) || 15000;
+      const weatherPref = document.querySelector('[name=weatherPref]')?.value || 'warm';
+
+      const panel = document.getElementById('searchResults');
+      panel.classList.remove('hidden');
+
+      const r = await fetch(`${API}/api/search/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ origin, destination, departDate, budget, weatherPref }),
+      });
+      if (!r.ok) {
+        const err = await r.json();
+        const notice = document.getElementById('notice');
+        notice.textContent = '⚠️ ' + (err.detail || 'Error en búsqueda');
+        notice.classList.remove('hidden');
+        return;
+      }
+      const data = await r.json();
+      renderSearchResults(data);
+    }
     })();
   </script>
 </body>
