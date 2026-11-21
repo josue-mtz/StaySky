@@ -1,7 +1,16 @@
 # StaySky · Buscador de Viajes por Clima + Presupuesto
 
-Integra vuelos, hoteles y clima histórico de México para recomendar destinos
-según preferencia climática y presupuesto.
+Integra vuelos, hoteles y clima histórico de México para ayudar a comparar
+opciones de viaje según la ruta, preferencia climática y presupuesto.
+
+## Interfaz
+- El formulario solicita ruta, fechas, personas adultas, presupuesto y clima.
+- El viaje redondo añade la fecha de regreso al enlace de vuelo de Booking.com; los precios de vuelo mostrados en StaySky corresponden a la salida.
+- Los resultados presentan tres vuelos y seis hoteles destacados, con opción de desplegar más; el clima se muestra como estimación histórica, no como pronóstico.
+- La interfaz adapta el tema claro/oscuro y cuenta con una página informativa en
+  `http://localhost:8000/static/acerca.html`.
+- Las imágenes de marca se encuentran en `frontend/assets/` (`banner.png` y
+  `favicon.png`).
 
 ## Stack
 - **Backend:** FastAPI 0.115 · Python 3.11

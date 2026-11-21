@@ -86,6 +86,8 @@ def normalize_offer(
     price = money_to_float(pb.get("total"))
     price_rounded = money_to_float(pb.get("totalRounded"))
     price_before = money_to_float(pb.get("totalWithoutDiscount"))
+    base_fare = money_to_float(pb.get("baseFare"))
+    taxes = money_to_float(pb.get("tax"))         
 
     if price is None:
         return None
@@ -130,6 +132,8 @@ def normalize_offer(
         "price": price,
         "priceRounded": price_rounded,
         "priceBeforeDiscount": price_before,
+        "baseFare": base_fare,
+        "taxes": taxes,       
         "badges": badges,
         "fareName": (offer.get("brandedFareInfo") or {}).get("fareName"),
         "hasCheckedBaggageIncluded": has_checked_included,

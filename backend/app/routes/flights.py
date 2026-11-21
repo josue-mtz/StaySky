@@ -13,6 +13,7 @@ from app.db import db, flights_col, utcnow
 from app.models.schemas import FlightsResponse
 from app.services.booking_client import BookingApiError, search_flights
 from app.services.flights_normalizer import normalize_offers
+from app.services.booking_urls import build_flight_url
 
 router = APIRouter(prefix="/api/flights", tags=["flights"])
 
@@ -93,6 +94,7 @@ async def get_flights(
     origin: str,
     destination: str,
     date: str = Query(..., description="YYYY-MM-DD"),
+    adults: int = Query(1, ge=1, le=9),
 ):
     origin, destination = origin.upper(), destination.upper()
 
@@ -108,6 +110,10 @@ async def get_flights(
             f"Sin vuelos cacheados para {origin}→{destination} el {date}. "
             f"Usa POST /api/flights/import-json o (con mucho cuidado) /refresh.",
         )
+
+    booking_url = build_flight_url(origin, destination, date, adults)
+    for f in flights:
+        f["bookingUrl"] = booking_url
 
     agg_doc = await aggregations_col.find_one(
         {"origin": origin, "destination": destination, "departDate": date},

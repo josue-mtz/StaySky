@@ -8,7 +8,7 @@
 
 **Proyecto final — Programación**
 
-**Alumno:** [Tu nombre completo]
+**Alumno:** Josué Uriel Martínez Ruíz
 **Matrícula:** [Tu matrícula]
 **Materia:** [Nombre de la materia]
 **Profesor:** [Nombre del profesor]
@@ -17,9 +17,9 @@
 
 ## Resumen ejecutivo
 
-StaySky es una aplicación web para consultar opciones de viaje en México a partir de una ruta, fecha, presupuesto y preferencia climática. El sistema reúne clima histórico de Open-Meteo y ofertas de vuelos y hoteles normalizadas a partir de Booking.com vía RapidAPI. Un backend FastAPI consulta los datos almacenados en MongoDB, calcula puntuaciones de precio y clima y presenta una recomendación; Apache Airflow automatiza la actualización de clima y la generación de estadísticas.
+StaySky es una aplicación web para consultar opciones de viaje en México a partir de una ruta, fechas, número de personas, presupuesto y preferencia climática. El sistema reúne clima histórico de Open-Meteo y ofertas de vuelos y hoteles normalizadas a partir de Booking.com vía RapidAPI. Un backend FastAPI consulta los datos almacenados en MongoDB, calcula puntuaciones de precio y clima y presenta una recomendación; Apache Airflow automatiza la actualización de clima y la generación de estadísticas.
 
-La aplicación cuenta con una interfaz de una sola página con temas claro y oscuro, un resumen visible de la búsqueda, recomendaciones de vuelos y alojamientos, y visualizaciones mensuales del clima. El diseño limita las llamadas a Booking mediante caché e importación de JSON. La versión documentada funciona con datos cacheados de rutas y fechas específicas; no es un metabuscador con disponibilidad garantizada para cualquier destino o fecha.
+La aplicación cuenta con una página principal de planificación y una página informativa “Acerca de StaySky”. La interfaz incluye temas claro y oscuro, un resumen visible de la búsqueda, recomendaciones de vuelos y alojamientos, visualizaciones mensuales del clima, y un pie de página con acceso a la página informativa. El diseño limita las llamadas a Booking mediante caché e importación de JSON. La versión documentada funciona con datos cacheados de rutas y fechas específicas; no es un metabuscador con disponibilidad garantizada para cualquier destino o fecha.
 
 ---
 
@@ -50,7 +50,7 @@ Las consecuencias de esta fragmentación son tangibles:
 - El presupuesto se gestiona por separado para vuelo y hotel, cuando debería considerarse como un total.
 - Los metabuscadores muestran decenas de resultados sin un criterio claro de *cuál es mejor para este usuario*.
 
-**StaySky** integra vuelos, alojamientos y clima histórico en una sola aplicación. Para una ruta, fecha, presupuesto y preferencia climática seleccionados por el usuario, presenta opciones disponibles en la caché y calcula puntuaciones explicables que ayudan a compararlas. En esta versión el usuario elige el destino: el sistema no compara automáticamente todos los destinos del catálogo ni garantiza disponibilidad en fechas sin datos cacheados.
+**StaySky** integra vuelos, alojamientos y clima histórico en una sola aplicación. Para una ruta, fechas, cantidad de personas, presupuesto y preferencia climática seleccionados por el usuario, presenta opciones disponibles en la caché y calcula puntuaciones explicables que ayudan a compararlas. En esta versión el usuario elige el destino: el sistema no compara automáticamente todos los destinos del catálogo ni garantiza disponibilidad en fechas sin datos cacheados.
 
 ---
 
@@ -85,7 +85,7 @@ Construir una aplicación web funcional y contenerizada con Docker que integre v
 | Base de datos principal | **MongoDB** | 7.x (imagen `mongo:7`; verificada localmente con 7.0.48) | Persistencia de vuelos, hoteles, clima y ciudades |
 | Base de datos de orquestación | **PostgreSQL** | 15 | Metadata interna de Airflow (única función) |
 | Orquestador | **Apache Airflow** | 2.10.3 (Python 3.11) | Automatización diaria de ingesta y recomputo de stats |
-| Frontend | **HTML5 + Tailwind CSS** (vía CDN) | 3.x | Interfaz de usuario de una sola página, sin proceso de build |
+| Frontend | **HTML5 + Tailwind CSS** (vía CDN) | 3.x | Páginas estáticas de planificación y “Acerca de”, sin proceso de build |
 | Contenedores | **Docker** + **Docker Compose** | — | 6 servicios orquestados |
 | API de clima | **Open-Meteo Archive** | — | Histórico diario, gratuito, sin API key |
 | API de vuelos/hoteles | **Booking.com** vía **RapidAPI** | — | Plan Basic configurado con límite de 20 requests mensuales |
@@ -96,7 +96,7 @@ Construir una aplicación web funcional y contenerizada con Docker que integre v
 
 - **MongoDB para los datos del dominio:** las respuestas de Booking contienen estructuras anidadas (`flightOffers[].segments[].legs[]`, `hotels[].property.priceBreakdown`). MongoDB permite conservar esos documentos y consultarlos sin descomponerlos en varias tablas.
 - **PostgreSQL para Airflow:** PostgreSQL guarda la metadata interna del orquestador; MongoDB se reserva para los datos de StaySky. En esta configuración Airflow utiliza `LocalExecutor` y PostgreSQL.
-- **Tailwind vía CDN, sin React ni Vite:** el alcance del proyecto no justifica un sistema de build. HTML plano + Tailwind CDN servido por `StaticFiles` de FastAPI resultó suficiente para una UI profesional en una sola página.
+- **Tailwind vía CDN, sin React ni Vite:** el alcance del proyecto no justifica un sistema de build. HTML plano + Tailwind CDN servido por `StaticFiles` de FastAPI resultó suficiente para la página de planificación y la página informativa.
 
 ---
 
@@ -108,9 +108,9 @@ Construir una aplicación web funcional y contenerizada con Docker que integre v
 ┌──────────────────────────────────────────────────────────────┐
 │  FRONTEND · HTML + Tailwind (CDN)                             │
 │  Servido por FastAPI en http://localhost:8000                 │
-│  · Formulario: origen, destino, fecha, presupuesto, clima     │
+│  · Planificación: ruta, fechas, personas, presupuesto y clima  │
 │  · Resultados: viaje recomendado, clima, vuelos y alojamientos│
-│  · Tema claro/oscuro y resumen de búsqueda en barra fija       │
+│  · Página Acerca de, tema claro/oscuro y pie de página        │
 └───────────────────────┬──────────────────────────────────────┘
                         │ fetch()
 ┌───────────────────────▼──────────────────────────────────────┐
@@ -156,10 +156,10 @@ Las cinco colecciones iniciales son `cities`, `flights`, `hotels`, `weather` y `
 ### 4.2. Flujo de una búsqueda unificada
 
 ```
-Usuario llena formulario (origen, destino, fecha, presupuesto, clima)
+Usuario llena formulario (origen, destino, fechas, adultos, presupuesto, clima)
        │
        ▼
-POST /api/search/  {origin, destination, departDate, budget, weatherPref}
+POST /api/search/  {origin, destination, departDate, checkout, adults, budget, weatherPref}
        │
        ├─► Busca ciudad en `cities` (por IATA)
        ├─► Toma el mes de departDate → busca clima típico de ese mes
@@ -175,6 +175,8 @@ POST /api/search/  {origin, destination, departDate, budget, weatherPref}
        └─► Devuelve: top 3 vuelos + top 3 hoteles + viaje recomendado
              y tripScore (promedio del mejor vuelo y hotel)
 ```
+
+En el formulario, el regreso es opcional; al elegir viaje redondo, se usa esa fecha como salida del hospedaje y se incluye en el enlace de vuelo a Booking.com. Los precios de vuelos que StaySky muestra desde su caché corresponden únicamente a la salida. Si no se especifica regreso, la interfaz propone una estancia de tres noches para consultar hoteles.
 
 ### 4.3. Principio de diseño clave: **caché obligatorio**
 
@@ -368,9 +370,9 @@ El plan original se organizó en **7 fases incrementales**. Se realizaron las fa
     - Rangos ideales por preferencia: `cold` (5-15°C), `mild` (15-24°C), `warm` (25-32°C).
   - `price_score(price, budget)` → 0-100, con curva lineal: 100 si es gratis, 50 si el precio es igual al presupuesto, 0 si es ≥ 2× el presupuesto.
   - `final_score(price_sc, weather_sc, w_price=0.5, w_weather=0.5)` → combina precio y clima al 50%.
-- `routes/search.py`: `POST /api/search/` recibe `{origin, destination, departDate, budget, weatherPref}` y devuelve el clima mensual típico, hasta 3 vuelos y 3 hoteles ordenados por puntuación, además del vuelo y hotel recomendados.
+- `routes/search.py`: `POST /api/search/` recibe origen, destino, fecha de salida, presupuesto, preferencia climática y, opcionalmente, número de adultos y fechas de hospedaje (`checkin`, `checkout`). Devuelve el clima mensual típico, hasta 3 vuelos y 3 hoteles ordenados por puntuación, además del vuelo y hotel recomendados.
 - `tripScore` es el promedio de la puntuación del mejor vuelo y la del mejor hotel; por eso depende de los datos cacheados, la fecha, el presupuesto y la preferencia climática.
-- Frontend: tarjeta con gradiente índigo-violeta-naranja para el viaje recomendado; los paneles de vuelos y alojamientos aparecen en dos columnas cuando el ancho de pantalla lo permite.
+- Frontend: tarjeta con gradiente índigo-violeta-naranja para el viaje recomendado; los paneles de vuelos y alojamientos aparecen en dos columnas cuando el ancho de pantalla lo permite. El formulario envía `adults` y el `checkout` elegido (o tres noches por defecto).
 
 **Verificación (evidencia de que el scoring funciona):**
 
@@ -454,7 +456,7 @@ Las cifras de datos y ejecuciones son una **fotografía del entorno local consul
 | Métrica | Valor |
 |---|---|
 | Fases del plan realizadas | 6 de 7 (fases 1–5 y 7; fase 6 omitida) |
-| Errores encontrados y resueltos | 6 documentados |
+| Errores encontrados y resueltos | 7 documentados |
 | Servicios definidos en Docker Compose | 6 |
 | Colecciones iniciales de dominio | 5 (`cities`, `flights`, `hotels`, `weather`, `searches`) |
 | Colecciones auxiliares utilizadas | `pipeline_stats`, `pipeline_runs`, `api_usage` y `flight_aggregations` |
@@ -467,6 +469,18 @@ Las cifras de datos y ejecuciones son una **fotografía del entorno local consul
 | Ejecuciones registradas en `pipeline_runs` | 6 al momento de la revisión |
 | Agregaciones en `pipeline_stats` | 3 (2 rutas de vuelo y 1 consulta de hoteles) |
 
+### 5.10. Mejoras finales de interfaz y página informativa
+
+Después de completar las funciones de búsqueda se añadieron ajustes de presentación y claridad para el usuario:
+
+- **Error 7:** el JavaScript del frontend no iniciaba y mostraba `Unexpected token ')'` porque faltaba cerrar la función `renderHotelCard`. Se corrigió el cierre; después se verificó la carga de ciudades y los flujos de búsqueda. También se reforzó el manejo de errores para que un fallo al cargar el clima no impida mostrar vuelos y hoteles.
+- El formulario inicia sin ciudades, fechas, presupuesto, cantidad de adultos ni clima preseleccionados. Muestra indicaciones de entrada y valida los campos requeridos; permite elegir de 1 a 9 adultos.
+- Se agregó la opción de viaje redondo con una fecha de regreso posterior a la salida. Esta fecha se envía como `checkout` para buscar hospedaje y se agrega al enlace de vuelo de Booking.com. Los precios de vuelos presentados por StaySky siguen siendo los cacheados para la fecha de salida, no una tarifa de ida y vuelta.
+- El resumen de búsqueda conserva en la barra superior la ruta, las fechas y el número de personas. El control de tema claro/oscuro queda alineado a la derecha y guarda la preferencia en el navegador.
+- En los resultados se muestran inicialmente los tres vuelos más económicos y seis hoteles destacados (dos económicos, dos de precio intermedio y dos mejor valorados); los botones permiten desplegar el resto. Se indica que el usuario debe confirmar disponibilidad, servicios y precio final en Booking.com.
+- Se agregó el pie de página adaptable con el nombre del autor y enlace a la página informativa. La página **Acerca de StaySky** está disponible en `/static/acerca.html` e incluye la descripción, el funcionamiento, las funciones, la tecnología y las limitaciones del proyecto.
+- Se incorporaron los recursos gráficos `frontend/assets/banner.png` (banner de la página informativa) y `frontend/assets/favicon.png` (icono de pestaña y marca junto al nombre StaySky).
+
 ---
 
 ## 6. Resultados
@@ -474,16 +488,20 @@ Las cifras de datos y ejecuciones son una **fotografía del entorno local consul
 ### 6.1. Frontend funcional
 
 [INSERTAR CAPTURA: 15_frontend_full.png]
+[INSERTAR CAPTURA: 29_acerca_staysky.png]
 
-La interfaz presenta en una sola página:
-- **Barra superior fija** con el nombre StaySky, un resumen de la última búsqueda y un control para alternar entre tema claro y oscuro; la preferencia visual se guarda en el navegador.
-- **Formulario de búsqueda** con origen, destino, fecha, presupuesto y preferencia climática (cálido, templado o frío).
+La aplicación presenta una página principal de planificación y una página informativa:
+- **Barra superior fija** con el nombre y el icono de StaySky, un resumen de la última búsqueda y un control para alternar entre tema claro y oscuro, alineado a la derecha; la preferencia visual se guarda en el navegador.
+- **Formulario de búsqueda** con origen, destino, fecha de salida, opción de regreso, cantidad de adultos (1–9), presupuesto y preferencia climática (cálido, templado o frío). Los controles comienzan vacíos, incluyen indicaciones y validan la entrada.
 - **Viaje recomendado** al inicio de los resultados, con Trip Score de 0 a 100 y resumen de la combinación mejor puntuada.
 - **Clima mensual** con 12 tarjetas, temperaturas máximas/mínimas, precipitación, iconos SVG con animaciones sutiles y colores de la paleta. La leyenda marca calor (máxima ≥30 °C), lluvia (promedio ≥1 mm/día), frío (máxima ≤15 °C) y clima moderado; los datos son una estimación histórica de 2023, no un pronóstico diario.
 - **Vuelos** ordenados de menor a mayor precio, con solo tres visibles inicialmente y un botón para desplegar el resto. Cada tarjeta muestra logo/nombre de aerolínea, número, horarios, duración, escalas, equipaje, precio y distintivos cuando existen.
 - **Alojamientos** con seis opciones destacadas: dos económicas, dos de precio intermedio y dos mejor valoradas. El resto aparece al desplegar la lista. Las tarjetas muestran calificación, estrellas, precio por noche y total.
+- **Viaje redondo y grupo:** la fecha de regreso se coloca junto a la fecha de salida; se utiliza para la estancia del hotel y para crear el enlace de vuelo con ambas fechas. Las tarifas mostradas en StaySky son de salida y deben confirmarse en Booking.com. El resumen superior mantiene visibles la ruta, fechas y personas.
 - **Paneles de vuelos y alojamientos** alineados en dos columnas en pantallas amplias, y apilados en pantallas pequeñas.
 - **Iconografía SVG y colores de marca** índigo (`#4F46E5`), violeta (`#8B5CF6`) y naranja (`#FB923C`), con un gradiente índigo-violeta-naranja, en lugar de depender de emojis.
+- **Pie de página adaptable** que se mantiene al final cuando hay poco contenido y aparece después del contenido cuando la página crece; muestra el crédito de Josué Uriel Martínez Ruíz y el enlace a “Acerca de StaySky”.
+- **Página “Acerca de StaySky”** servida en `/static/acerca.html`, con el banner `frontend/assets/banner.png`, un resumen del proyecto, su flujo, tecnologías y limitaciones. El favicon `frontend/assets/favicon.png` se utiliza en la pestaña y junto al nombre de la marca.
 
 ### 6.2. Documentación OpenAPI automática
 

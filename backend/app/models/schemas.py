@@ -53,6 +53,9 @@ class FlightSummary(BaseModel):
     hasCheckedBaggageIncluded: bool
     checkedBaggagePrice: float | None = None
     flexibleTicketPrice: float | None = None
+    baseFare: float | None = None
+    taxes: float | None = None
+    bookingUrl: str | None = None
 
 
 class FlightsResponse(BaseModel):
@@ -83,6 +86,7 @@ class HotelSummary(BaseModel):
     adults: int
     currencyMismatch: bool = False
     declaredCurrency: str | None = None
+    bookingUrl: str | None = None  
 
 
 class HotelsResponse(BaseModel):
@@ -114,6 +118,7 @@ class SearchRequest(BaseModel):
     weatherPref: str = Field("warm", pattern=r"^(cold|mild|warm)$")
     checkin: str | None = None
     checkout: str | None = None
+    adults: int = Field(1, ge=1, le=9) 
 
 
 class ScoredFlight(BaseModel):

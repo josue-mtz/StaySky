@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Conoce StaySky, una herramienta para comparar opciones de viaje con clima histórico y presupuesto." />
+  <title>Acerca de StaySky</title>
+  <link rel="icon" type="image/png" href="/static/assets/favicon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    try {
+      document.documentElement.dataset.theme =
+        localStorage.getItem('staysky-theme') === 'dark' ? 'dark' : 'light';
+    } catch (error) {
+      console.error('No se pudo recuperar el tema guardado.', error);
+      document.documentElement.dataset.theme = 'light';
+    }
+  </script>
+  <style>
+    html[data-theme="dark"] { color-scheme: dark; }
+    html[data-theme="dark"] body { background-color: #0f172a !important; color: #e2e8f0 !important; }
+    html[data-theme="dark"] .bg-white { background-color: #1e293b !important; }
+    html[data-theme="dark"] .bg-slate-50 { background-color: #0f172a !important; }
+    html[data-theme="dark"] .bg-indigo-50 { background-color: #312e81 !important; }
+    html[data-theme="dark"] .text-slate-800,
+    html[data-theme="dark"] .text-slate-700,
+    html[data-theme="dark"] .text-slate-600 { color: #e2e8f0 !important; }
+    html[data-theme="dark"] .text-slate-500,
+    html[data-theme="dark"] .text-slate-400 { color: #94a3b8 !important; }
+    html[data-theme="dark"] .text-indigo-600 { color: #a5b4fc !important; }
+    html[data-theme="dark"] .border,
+    html[data-theme="dark"] .border-t,
+    html[data-theme="dark"] .border-slate-200,
+    html[data-theme="dark"] .border-indigo-200 { border-color: #475569 !important; }
+    html[data-theme="dark"] #themeToggle { background-color: #334155; border-color: #475569; color: #e2e8f0; }
+    .about-cta { background-color: #fff !important; color: #4338ca !important; }
+    .about-cta:hover { background-color: #eef2ff !important; }
+    .about-banner { background: #0b1c3d; }
+    button { transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease, transform 180ms ease; }
+    button:not(:disabled):hover { filter: saturate(1.25) brightness(0.94); box-shadow: 0 8px 18px rgb(79 70 229 / 22%); transform: translateY(-1px); }
+    button:focus-visible, a:focus-visible { outline: 3px solid #a5b4fc; outline-offset: 3px; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+  <header class="sticky top-0 z-50 bg-white shadow">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
+      <a href="/" class="flex items-center gap-2 text-lg font-bold text-slate-800 sm:text-xl">
+        <img src="/static/assets/favicon.png" alt="" class="h-6 w-6 rounded-full bg-indigo-700 p-1 object-contain" />
+        StaySky
+      </a>
+      <div class="flex items-center gap-3">
+        <a href="/#searchForm" class="hidden text-sm font-medium text-indigo-600 hover:text-violet-500 sm:inline">Planifica tu viaje</a>
+        <button id="themeToggle" type="button" class="inline-flex shrink-0 items-center rounded-full border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-700" aria-pressed="false">
+          <span id="themeToggleContent" class="inline-flex items-center gap-2"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl space-y-8 px-6 py-8">
+    <section class="overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 via-violet-600 to-orange-400 p-8 text-white shadow-lg sm:p-12">
+      <div class="about-banner mb-6 aspect-[3/2] overflow-hidden rounded-2xl shadow-inner">
+        <img src="/static/assets/banner.png" alt="Banner de StaySky: buscador de viajes por clima y presupuesto" class="h-full w-full object-contain" />
+      </div>
+      <p class="mb-3 text-sm font-semibold uppercase tracking-wider text-white/80">Acerca del proyecto</p>
+      <h1 class="max-w-3xl text-3xl font-bold sm:text-5xl">Viajar con más claridad empieza con una buena comparación.</h1>
+      <p class="mt-4 max-w-2xl text-base text-white/90 sm:text-lg">
+        StaySky reúne opciones de vuelo, hospedaje y clima histórico para ayudarte a explorar un viaje según tu presupuesto y preferencias.
+      </p>
+      <a href="/#searchForm" class="about-cta mt-7 inline-flex rounded-xl px-5 py-3 font-semibold transition">
+        Planifica tu viaje
+      </a>
+    </section>
+
+    <section class="grid gap-6 md:grid-cols-2">
+      <article class="rounded-2xl bg-white p-6 shadow">
+        <h2 class="text-xl font-bold">¿Qué es StaySky?</h2>
+        <p class="mt-3 leading-7 text-slate-600">
+          Es una aplicación de planeación de viajes que presenta en un mismo lugar alternativas de vuelos y hoteles, junto con información climática histórica del destino. Su objetivo es facilitar la comparación; no reemplaza la confirmación de precios ni la reserva con los proveedores.
+        </p>
+      </article>
+      <article class="rounded-2xl bg-white p-6 shadow">
+        <h2 class="text-xl font-bold">¿Para quién está pensada?</h2>
+        <p class="mt-3 leading-7 text-slate-600">
+          Para quienes quieren comparar opciones antes de reservar, tener presentes su ruta y fechas, y considerar tanto el presupuesto como el clima habitual del destino.
+        </p>
+      </article>
+    </section>
+
+    <section>
+      <div class="mb-4">
+        <p class="text-sm font-semibold uppercase tracking-wider text-violet-500">Cómo funciona</p>
+        <h2 class="mt-1 text-2xl font-bold">De tus preferencias a opciones comparables</h2>
+      </div>
+      <div class="grid gap-4 md:grid-cols-3">
+        <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <span class="text-sm font-bold text-indigo-600">01 · Indica tu viaje</span>
+          <h3 class="mt-2 text-lg font-semibold">Ruta y preferencias</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-500">Elige origen, destino, fechas, cantidad de personas, presupuesto y clima preferido.</p>
+        </article>
+        <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <span class="text-sm font-bold text-violet-500">02 · Compara información</span>
+          <h3 class="mt-2 text-lg font-semibold">Opciones guardadas</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-500">StaySky consulta vuelos y hoteles disponibles en su base de datos, además de los promedios climáticos del destino.</p>
+        </article>
+        <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <span class="text-sm font-bold text-orange-500">03 · Revisa antes de reservar</span>
+          <h3 class="mt-2 text-lg font-semibold">Recomendaciones y enlaces</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-500">Consulta los resultados y visita Booking.com para verificar disponibilidad, condiciones y precio final.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="rounded-2xl bg-white p-6 shadow sm:p-8">
+      <h2 class="text-2xl font-bold">Lo que puedes encontrar</h2>
+      <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <article>
+          <h3 class="font-semibold text-indigo-600">Vuelos</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-500">Opciones ordenadas por precio, con información de aerolínea, horarios y escalas. Los precios mostrados corresponden al vuelo de salida.</p>
+        </article>
+        <article>
+          <h3 class="font-semibold text-indigo-600">Alojamientos</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-500">Alternativas destacadas por precio y valoración, con acceso para consultar los detalles en Booking.com.</p>
+        </article>
+        <article>
+          <h3 class="font-semibold text-indigo-600">Clima habitual</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-500">Promedios históricos mensuales que sirven como referencia; no son un pronóstico para tus fechas exactas.</p>
+        </article>
+        <article>
+          <h3 class="font-semibold text-indigo-600">Puntuación del viaje</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-500">Un indicador que combina puntuaciones de precio y afinidad climática para ayudar a comparar opciones.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="grid gap-6 md:grid-cols-2">
+      <article class="rounded-2xl border border-indigo-200 bg-indigo-50 p-6">
+        <h2 class="text-xl font-bold">Datos claros, expectativas realistas</h2>
+        <ul class="mt-4 space-y-3 text-sm leading-6 text-slate-600">
+          <li>Los vuelos y hoteles mostrados dependen de los datos guardados para la ruta y las fechas consultadas; puede que no haya resultados para todas las búsquedas.</li>
+          <li>Los datos de vuelos y hoteles pueden cambiar. Confirma los detalles y el precio actual directamente con Booking.com antes de reservar.</li>
+          <li>El clima se basa en registros históricos disponibles y es solo una estimación, no una predicción exacta.</li>
+          <li>En un viaje redondo, el enlace de vuelo permite consultar ambas fechas; la tarifa presentada en StaySky es la del vuelo de salida.</li>
+        </ul>
+      </article>
+      <article class="rounded-2xl bg-white p-6 shadow">
+        <h2 class="text-xl font-bold">Tecnología del proyecto</h2>
+        <p class="mt-3 leading-7 text-slate-600">
+          La interfaz está construida con HTML y Tailwind CSS. Una API en FastAPI sirve la aplicación y coordina las consultas; MongoDB conserva los datos y la caché. Open-Meteo proporciona datos climáticos históricos, Booking.com se consulta mediante RapidAPI para obtener datos de viaje, y Apache Airflow organiza procesos de datos.
+        </p>
+        <div class="mt-5 flex flex-wrap gap-2">
+          <span class="rounded-full bg-indigo-600 px-3 py-1 text-xs font-medium text-white">FastAPI</span>
+          <span class="rounded-full bg-indigo-600 px-3 py-1 text-xs font-medium text-white">MongoDB</span>
+          <span class="rounded-full bg-indigo-600 px-3 py-1 text-xs font-medium text-white">Open-Meteo</span>
+          <span class="rounded-full bg-indigo-600 px-3 py-1 text-xs font-medium text-white">Booking.com · RapidAPI</span>
+          <span class="rounded-full bg-indigo-600 px-3 py-1 text-xs font-medium text-white">Apache Airflow</span>
+          <span class="rounded-full bg-indigo-600 px-3 py-1 text-xs font-medium text-white">Docker</span>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+      <p>Desarrollado por <span class="font-medium text-slate-700">Josué Uriel Martínez Ruíz</span></p>
+      <a href="/" class="font-medium text-indigo-600 transition hover:text-violet-500">Volver a StaySky</a>
+    </div>
+  </footer>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const themeToggleContent = document.getElementById('themeToggleContent');
+    const themeIcons = {
+      sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>',
+      moon: '<path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/>',
+    };
+
+    function setTheme(theme, persist = false) {
+      const isDark = theme === 'dark';
+      document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+      themeToggle.setAttribute('aria-pressed', String(isDark));
+      themeToggle.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+      const iconName = isDark ? 'sun' : 'moon';
+      themeToggleContent.innerHTML =
+        `<svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${themeIcons[iconName]}</svg><span>${isDark ? 'Modo claro' : 'Modo oscuro'}</span>`;
+      if (persist) {
+        try {
+          localStorage.setItem('staysky-theme', isDark ? 'dark' : 'light');
+        } catch (error) {
+          console.error('No se pudo guardar el tema seleccionado.', error);
+        }
+      }
+    }
+
+    setTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+    themeToggle.addEventListener('click', () => {
+      setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark', true);
+    });
+  </script>
+</body>
+</html>

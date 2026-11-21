@@ -5,6 +5,7 @@ Combina clima histórico + vuelos cacheados + hoteles cacheados
 y devuelve un ranking con scores.
 """
 from fastapi import APIRouter, HTTPException
+from app.services.booking_urls import build_flight_url, build_hotel_url
 
 from app.db import cities_col, flights_col, hotels_col, weather_col
 from app.models.schemas import (
@@ -99,6 +100,12 @@ async def search(req: SearchRequest):
         {"_id": 0, "segments": 0, "token": 0, "fetchedAt": 0},
     ).to_list(length=200)
 
+    flight_booking_url = build_flight_url(
+        origin, destination, req.departDate, req.adults
+    )
+    for f in raw_flights:
+        f["bookingUrl"] = flight_booking_url
+
     scored_flights: list[ScoredFlight] = []
     for f in raw_flights:
         try:
@@ -130,6 +137,12 @@ async def search(req: SearchRequest):
         {"destination": destination, "checkinDate": checkin, "checkoutDate": checkout},
         {"_id": 0, "accessibilityLabel": 0, "fetchedAt": 0},
     ).to_list(length=200)
+
+    city_name = city["name"]  # ya lo tienes del bloque de arriba
+    for h in raw_hotels:
+        h["bookingUrl"] = build_hotel_url(
+            city_name, h["checkinDate"], h["checkoutDate"], h.get("adults", 2)
+        )
 
     scored_hotels: list[ScoredHotel] = []
     for h in raw_hotels:

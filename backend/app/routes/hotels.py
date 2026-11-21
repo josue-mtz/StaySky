@@ -10,7 +10,8 @@ import httpx
 from fastapi import APIRouter, Body, HTTPException, Query
 
 from app.config import settings
-from app.db import db, hotels_col, utcnow
+from app.db import db, hotels_col, cities_col, utcnow
+from app.services.booking_urls import build_hotel_url 
 from app.models.schemas import HotelsResponse
 from app.services.hotels_normalizer import normalize_hotels
 
@@ -135,6 +136,19 @@ async def get_hotels(
             404,
             f"Sin hoteles cacheados para {dest} ({checkin} → {checkout}). "
             f"Usa POST /api/hotels/import-json.",
+        )
+
+    # Nombre de ciudad para la URL (fallback al IATA)
+    city = await cities_col.find_one({"iata": dest}, {"_id": 0, "name": 1})
+    city_name = city["name"] if city else dest
+
+    # Construir bookingUrl por hotel (usa el adults real de la data)
+    for h in hotels:
+        h["bookingUrl"] = build_hotel_url(
+            city_name,
+            h["checkinDate"],
+            h["checkoutDate"],
+            h.get("adults", 2),
         )
 
     mismatches = sum(1 for h in hotels if h.get("currencyMismatch"))

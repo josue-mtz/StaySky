@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>StaySky · Planea tu viaje</title>
+  <link rel="icon" type="image/png" href="/static/assets/favicon.png" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     try {
@@ -138,57 +139,69 @@
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
   <header class="sticky top-0 z-50 bg-white shadow">
     <div class="max-w-6xl mx-auto px-6 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
       <h1 class="order-1 flex shrink-0 items-center gap-2 text-lg sm:text-xl font-bold">
-        <svg class="h-6 w-6 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="16" cy="5" r="3"></circle><path d="M16 1v1m0 6v1m4.24-6.24-.7.7m-6.08 4.24-.7.7M20 5h-1M13 5h-1"></path>
-          <path d="M20 16.5a4.5 4.5 0 0 0-8.5-2A4 4 0 1 0 5 20h13a3 3 0 0 0 2-3.5Z"></path>
-        </svg>
+        <img src="/static/assets/favicon.png" alt="" class="h-6 w-6 rounded-full bg-indigo-700 p-1 object-contain" />
         StaySky
       </h1>
       <div id="searchSummary" hidden role="status" aria-label="Resumen de tu búsqueda" aria-live="polite" class="order-3 basis-full min-w-0 text-left text-xs text-slate-600 md:order-2 md:basis-auto md:flex-1 md:text-center">
         <span id="searchSummaryText"></span>
       </div>
-      <button id="themeToggle" type="button" class="order-2 inline-flex shrink-0 items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-700 md:order-3" aria-pressed="false">
-        <span id="themeToggleContent"></span>
+      <button id="themeToggle" type="button" class="order-2 ml-auto inline-flex shrink-0 items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-700 md:order-3" aria-pressed="false">
+        <span id="themeToggleContent" class="inline-flex items-center gap-2"></span>
       </button>
     </div>
   </header>
 
-  <main class="max-w-6xl mx-auto px-6 py-8 space-y-6">
+  <main class="mx-auto w-full max-w-6xl flex-1 px-6 py-8 space-y-6">
 
     <!-- Formulario -->
     <section class="bg-white rounded-2xl shadow p-6">
-      <h2 class="text-xl font-semibold mb-4">Planifica tu escapada</h2>
       <form id="searchForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-          <label class="block text-sm font-medium mb-1">Origen</label>
-          <select name="origin" id="origin" class="w-full border rounded-lg px-3 py-2"></select>
+        <div class="md:col-span-4 flex flex-wrap items-center justify-between gap-3">
+          <h2 class="text-xl font-semibold">Planifica tu escapada</h2>
+          <div class="flex items-center gap-2">
+            <input type="checkbox" id="roundTrip" name="roundTrip" class="h-4 w-4 accent-indigo-600" />
+            <label for="roundTrip" class="text-sm font-medium">Viaje redondo</label>
+          </div>
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">Destino</label>
-          <select name="destination" id="destination" class="w-full border rounded-lg px-3 py-2"></select>
+          <label for="origin" class="block text-sm font-medium mb-1">Origen</label>
+          <select name="origin" id="origin" required class="w-full border rounded-lg px-3 py-2"></select>
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">Fecha de salida</label>
-          <input type="date" name="departDate" id="departDate" value="2027-03-12" class="w-full border rounded-lg px-3 py-2" />
+          <label for="destination" class="block text-sm font-medium mb-1">Destino</label>
+          <select name="destination" id="destination" required class="w-full border rounded-lg px-3 py-2"></select>
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">Presupuesto (MXN)</label>
-          <input type="number" name="budget" value="5000" class="w-full border rounded-lg px-3 py-2" />
+          <label for="departDate" class="block text-sm font-medium mb-1">Fecha de salida</label>
+          <input type="date" name="departDate" id="departDate" required class="w-full border rounded-lg px-3 py-2" />
+        </div>
+        <div id="returnDateField" class="hidden">
+          <label for="returnDate" class="block text-sm font-medium mb-1">Fecha de regreso</label>
+          <input type="date" id="returnDate" name="returnDate" disabled class="w-full border rounded-lg px-3 py-2" />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">¿Qué clima prefieres?</label>
-          <select name="weatherPref" class="w-full border rounded-lg px-3 py-2">
+          <label for="adults" class="block text-sm font-medium mb-1">Personas adultas</label>
+          <input type="number" id="adults" name="adults" min="1" max="9" step="1" placeholder="Ej. 2" required class="w-full border rounded-lg px-3 py-2" />
+        </div>
+        <div>
+          <label for="budget" class="block text-sm font-medium mb-1">Presupuesto (MXN)</label>
+          <input type="number" id="budget" name="budget" min="1" step="1" placeholder="Ej. 5000" required class="w-full border rounded-lg px-3 py-2" />
+        </div>
+        <div>
+          <label for="weatherPref" class="block text-sm font-medium mb-1">¿Qué clima prefieres?</label>
+          <select id="weatherPref" name="weatherPref" required class="w-full border rounded-lg px-3 py-2">
+            <option value="" disabled selected>Selecciona el clima</option>
             <option value="warm">Cálido (25–32°C)</option>
             <option value="mild">Templado (15–24°C)</option>
             <option value="cold">Frío (5–15°C)</option>
           </select>
         </div>
-        <button class="md:col-span-5 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-medium">
+        <button type="submit" class="md:col-span-4 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-medium">
           Buscar mi viaje
         </button>
       </form>
@@ -257,6 +270,7 @@
         <span id="flightsMeta" class="text-xs text-slate-400 sm:text-right"></span>
       </div>
       <div id="flightsList" class="space-y-3"></div>
+      <p id="flightFareNote" class="mt-3 hidden text-xs text-slate-500"></p>
       <button id="toggleFlights" type="button" hidden class="mt-4 rounded-lg border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-600 transition hover:bg-indigo-50">
         Ver todas las opciones de vuelo
       </button>
@@ -273,6 +287,7 @@
         </h2>
         <span id="hotelsMeta" class="text-xs text-slate-400 sm:text-right"></span>
       </div>
+      <p class="mb-4 text-xs text-slate-500">Para más información sobre los hoteles, consulta disponibilidad y confirma el precio para tu grupo en <a href="https://www.booking.com/" target="_blank" rel="noopener noreferrer" class="font-medium text-indigo-600 underline hover:text-violet-500">Booking.com</a>.</p>
       <div id="hotelsList" class="space-y-6"></div>
       <button id="toggleHotels" type="button" hidden class="mt-4 rounded-lg border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-600 transition hover:bg-indigo-50">
         Ver todos los alojamientos
@@ -280,12 +295,19 @@
     </section>
 
     <!-- Aviso -->
-    <section id="notice" class="hidden bg-orange-50 border border-orange-200 rounded-2xl p-4 text-sm text-orange-800"></section>
+    <section id="notice" role="alert" aria-live="polite" class="hidden bg-orange-50 border border-orange-200 rounded-2xl p-4 text-sm text-orange-800"></section>
   </main>
+
+  <footer class="mt-auto border-t border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+      <p>Desarrollado por <span class="font-medium text-slate-700">Josué Uriel Martínez Ruíz</span></p>
+      <a href="/static/acerca.html" class="font-medium text-indigo-600 transition hover:text-violet-500">Acerca de StaySky</a>
+    </div>
+  </footer>
 
   <script>
     const API = '';
-    const state = { cities: [] };
+    const state = { cities: [], adults: 1, returnDate: '' };
     const ICON_PATHS = {
       alert: '<path d="M10.3 3.9 2.7 17.1A2 2 0 0 0 4.4 20h15.2a2 2 0 0 0 1.7-2.9L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4m0 4h.01"/>',
       backpack: '<path d="M6 7V5a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v2"/><rect x="4" y="7" width="16" height="15" rx="3"/><path d="M8 11h8v4H8zM4 13H2v4h2m16-4h2v4h-2"/>',
@@ -293,6 +315,7 @@
       cloudRain: '<path d="M20 16.5a4.5 4.5 0 0 0-8.5-2A4 4 0 1 0 5 20h13a3 3 0 0 0 2-3.5Z"/><path d="m8 17-1 2m6-2-1 2m6-2-1 2"/>',
       cloudSun: '<circle cx="17" cy="5" r="3"/><path d="M17 1v1m0 6v1m4.24-6.24-.7.7m-6.08 4.24-.7.7M21 5h-1m-6 0h-1"/><path d="M20 16.5a4.5 4.5 0 0 0-8.5-2A4 4 0 1 0 5 20h13a3 3 0 0 0 2-3.5Z"/>',
       droplet: '<path d="M12 22a7 7 0 0 0 7-7c0-4-7-13-7-13S5 11 5 15a7 7 0 0 0 7 7Z"/>',
+      coins: '<circle cx="8" cy="8" r="6"/><path d="M18.5 10.5a6 6 0 1 1-5 7.4"/><path d="M8 5v6m-2-2h4"/>',
       hotel: '<path d="M4 21V5l8-3 8 3v16"/><path d="M9 21v-4h6v4"/><path d="M8 8h.01M16 8h.01M8 12h.01M16 12h.01"/>',
       moon: '<path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/>',
       plane: '<path d="M3 14.5 10 11V4a2 2 0 0 1 4 0v7l7 3.5v2l-7-1.5v3l2 1v1.5l-3-.75-3 .75V19l2-1v-3l-7 1.5z"/>',
@@ -308,6 +331,52 @@
       const paths = ICON_PATHS[name];
       if (!paths) throw new Error(`Unknown icon: ${name}`);
       return `<svg class="${className} shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, (character) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      })[character]);
+    }
+
+    function safeBookingUrl(value) {
+      if (typeof value !== 'string') return '';
+      try {
+        const url = new URL(value);
+        const hostname = url.hostname.toLowerCase();
+        return url.protocol === 'https:'
+          && (hostname === 'booking.com' || hostname.endsWith('.booking.com'))
+          ? url.href
+          : '';
+      } catch {
+        return '';
+      }
+    }
+
+    function bookingUrlForTrip(value, type) {
+      const safeUrl = safeBookingUrl(value);
+      if (!safeUrl) return '';
+      const url = new URL(safeUrl);
+      if (type === 'flight') {
+        url.searchParams.set('adults', String(state.adults));
+        if (state.returnDate) {
+          url.searchParams.set('type', 'ROUNDTRIP');
+          url.searchParams.set('return', state.returnDate);
+        }
+      } else {
+        url.searchParams.set('group_adults', String(state.adults));
+      }
+      return url.href;
+    }
+
+    function addDays(dateValue, days) {
+      const date = new Date(`${dateValue}T00:00:00Z`);
+      date.setUTCDate(date.getUTCDate() + days);
+      return date.toISOString().slice(0, 10);
     }
 
     const themeToggle = document.getElementById('themeToggle');
@@ -373,16 +442,19 @@
 
     async function loadCities() {
       const r = await fetch(`${API}/api/cities`);
-      state.cities = await r.json();
+      if (!r.ok) throw new Error(`La API respondió ${r.status} al cargar las ciudades.`);
+      const cities = await r.json();
+      if (!Array.isArray(cities) || cities.length === 0) {
+        throw new Error('La API no devolvió ciudades disponibles.');
+      }
+      state.cities = cities;
       const opts = state.cities
-        .map(c => `<option value="${c.iata}">${c.name} (${c.iata})</option>`)
+        .map(c => `<option value="${escapeHtml(c.iata)}">${escapeHtml(c.name)} (${escapeHtml(c.iata)})</option>`)
         .join('');
       const origin = document.getElementById('origin');
       const dest = document.getElementById('destination');
-      origin.innerHTML = opts;
-      dest.innerHTML = opts;
-      origin.value = 'MEX';
-      dest.value = 'CUN';
+      origin.innerHTML = `<option value="" disabled selected>Selecciona el origen</option>${opts}`;
+      dest.innerHTML = `<option value="" disabled selected>Selecciona el destino</option>${opts}`;
     }
 
     function money(n) {
@@ -417,14 +489,14 @@
         && /^https:\/\/r-[a-z0-9-]+\.bstatic\.com\/data\/airlines_logo\/[a-z0-9]+\.png$/i.test(airline.logo)
         ? airline.logo
         : '';
-      const fallbackContent = code || icon('plane', 'h-4 w-4 text-indigo-600');
-      const fallback = `<span ${url ? 'hidden' : ''} class="text-xs font-bold text-indigo-600">${fallbackContent}</span>`;
+      const fallbackContent = escapeHtml(code) || icon('plane', 'h-4 w-4 text-indigo-600');
+      const fallback = `<span class="text-xs font-bold text-indigo-600">${fallbackContent}</span>`;
       const logo = url
-        ? `<img src="${url}" alt="" loading="lazy" class="h-full w-full object-contain" onerror="this.hidden=true;this.nextElementSibling.hidden=false">${fallback}`
+        ? `<img src="${url}" alt="" loading="lazy" class="h-full w-full object-contain" onload="this.nextElementSibling.hidden=true" onerror="this.hidden=true;this.nextElementSibling.hidden=false">${fallback}`
         : fallback;
       return `<span class="inline-flex min-w-0 items-center gap-2">
         <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white p-1">${logo}</span>
-        <span class="truncate">${airline?.name || code || 'Aerolínea'}</span>
+        <span class="truncate">${escapeHtml(airline?.name || code || 'Aerolínea')}</span>
       </span>`;
     }
 
@@ -440,12 +512,12 @@
         `${flights.length} opciones · precio más bajo primero`;
 
       list.innerHTML = visibleFlights.map(f => {
-        const badgesHtml = f.badges.map(b => {
+        const badgesHtml = (f.badges || []).map(b => {
           const color = b === 'CHEAPEST' ? 'bg-green-100 text-green-700'
                      : b === 'FASTEST'  ? 'bg-violet-100 text-violet-700'
                      : 'bg-indigo-100 text-indigo-700';
           const label = { CHEAPEST: 'Menor precio', FASTEST: 'Más rápido', BEST: 'Recomendado' }[b] || b;
-          return `<span class="text-[10px] font-medium px-2 py-0.5 rounded ${color}">${label}</span>`;
+          return `<span class="text-[10px] font-medium px-2 py-0.5 rounded ${color}">${escapeHtml(label)}</span>`;
         }).join(' ');
 
         const discount = f.priceBeforeDiscount && f.priceBeforeDiscount > f.price
@@ -458,30 +530,54 @@
 
         const stopsLabel = f.stops === 0 ? '<span class="text-green-600 font-medium">Directo</span>'
                         : `<span class="text-orange-600">${f.stops} escala${f.stops > 1 ? 's' : ''}</span>`;
+        const bookingUrl = bookingUrlForTrip(f.bookingUrl, 'flight');
 
         return `
           <div class="border rounded-xl p-4 hover:border-indigo-300 transition">
-            <div class="flex items-start justify-between gap-4">
-              <div class="flex-1">
-                <div class="flex items-center gap-2 mb-2">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div class="min-w-0 flex-1">
+                <div class="mb-2 flex min-w-0 flex-wrap items-center gap-2">
                   ${airlineIdentity(f.airline)}
-                  <span class="text-xs text-slate-400">${f.flightNumber}</span>
+                  <span class="text-xs text-slate-400">${escapeHtml(f.flightNumber)}</span>
                   ${badgesHtml}
                 </div>
-                <div class="flex items-center gap-3 text-sm">
-                  <span class="font-mono font-semibold">${hhmm(f.departTime)}</span>
+                <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+                  <span class="font-mono font-semibold">${escapeHtml(hhmm(f.departTime))}</span>
                   <span class="text-slate-300">→</span>
-                  <span class="font-mono font-semibold">${hhmm(f.arrivalTime)}</span>
+                  <span class="font-mono font-semibold">${escapeHtml(hhmm(f.arrivalTime))}</span>
                   <span class="text-xs text-slate-400">· ${fmtDuration(f.durationMinutes)}</span>
                   <span class="text-xs">· ${stopsLabel}</span>
                 </div>
                 <div class="mt-2 text-xs">${baggage}</div>
               </div>
-              <div class="text-right">
+              <div class="shrink-0 text-right">
                 <div class="text-lg font-bold text-indigo-600">${money(f.price)}</div>
                 ${discount}
-                <div class="text-xs text-slate-400 mt-1">${f.fareName || ''}</div>
+                <div class="text-xs text-slate-400 mt-1">${escapeHtml(f.fareName || '')}</div>
               </div>
+            </div>
+            <div class="mt-3 flex flex-wrap items-center justify-between gap-3 border-t pt-3">
+              <details class="min-w-0 flex-1">
+                <summary class="inline-flex cursor-pointer items-center gap-1 text-xs text-indigo-600 hover:underline select-none">
+                  ${icon('coins', 'h-4 w-4')} Detalles del precio
+                </summary>
+                <div class="mt-2 p-3 bg-slate-50 rounded-lg text-xs space-y-1">
+                  <div class="flex justify-between">
+                    <span class="text-slate-600">Tarifa base:</span>
+                    <span class="font-medium">${f.baseFare != null ? money(f.baseFare) : '—'}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-slate-600">Impuestos y cargos (incluye TUA):</span>
+                    <span class="font-medium">${f.taxes != null ? money(f.taxes) : '—'}</span>
+                  </div>
+                  <div class="flex justify-between border-t border-slate-200 pt-1 mt-1">
+                    <span class="font-semibold">Total:</span>
+                    <span class="font-bold text-indigo-600">${money(f.price)}</span>
+                  </div>
+                  <p class="mt-1 inline-flex items-center gap-1 text-[10px] text-slate-400">${icon('check', 'h-3 w-3')} El total ya incluye TUA e impuestos aplicables.</p>
+                </div>
+              </details>
+              ${bookingUrl ? `<a href="${escapeHtml(bookingUrl)}" target="_blank" rel="noopener noreferrer" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium px-3 py-1.5 rounded-lg whitespace-nowrap transition">Reservar →</a>` : ''}
             </div>
           </div>
         `;
@@ -495,7 +591,7 @@
       };
     }
 
-    async function loadFlights(iata, date) {
+    async function loadFlights(iata, date, adults) {
       const panel = document.getElementById('flightsPanel');
       const list = document.getElementById('flightsList');
       const toggle = document.getElementById('toggleFlights');
@@ -504,18 +600,24 @@
       toggle.hidden = true;
       panel.classList.remove('hidden');
       document.getElementById('flightsMeta').textContent =
-        `${cityLabel(origin)} → ${cityLabel(iata)} · ${formatDate(date)}`;
+        `${cityLabel(origin)} → ${cityLabel(iata)} · ${formatDate(date)} · ${adults} persona${adults !== 1 ? 's' : ''}`;
+      const fareNote = document.getElementById('flightFareNote');
+      fareNote.classList.toggle('hidden', !state.returnDate);
+      fareNote.textContent = state.returnDate
+        ? 'Los precios mostrados corresponden al vuelo de salida. El enlace de reserva incluye la fecha de regreso para consultar el viaje redondo en Booking.com.'
+        : '';
       list.innerHTML = `<p class="text-slate-400 text-sm">Buscando opciones de vuelo…</p>`;
       document.getElementById('notice').classList.add('hidden');
 
       try {
-        const r = await fetch(`${API}/api/flights/${origin}/${iata}?date=${date}`);
+        const r = await fetch(`${API}/api/flights/${origin}/${iata}?date=${encodeURIComponent(date)}&adults=${encodeURIComponent(adults)}`);
         if (r.status === 404) {
           list.innerHTML = '';
           showNotice(`Aún no tenemos vuelos guardados para ${cityLabel(origin)} → ${cityLabel(iata)} el ${formatDate(date)}. Prueba otra fecha o destino.`);
           return;
         }
         const data = await r.json();
+        if (!r.ok) throw new Error(data.detail || `La API respondió ${r.status}.`);
         renderFlights(data);
       } catch (e) {
         console.error('No se pudieron cargar los vuelos.', e);
@@ -530,30 +632,50 @@
       panel.classList.remove('hidden');
       grid.innerHTML = `<p class="col-span-full text-slate-400 text-sm">Consultando información del clima…</p>`;
 
-      const w = await fetch(`${API}/api/weather/${iata}?start_date=2023-01-01&end_date=2023-12-31`).then(r => r.json());
-      document.getElementById('climateSource').textContent = `Datos históricos de ${w.count} días`;
+      try {
+        const weatherResponse = await fetch(`${API}/api/weather/${iata}?start_date=2023-01-01&end_date=2023-12-31`);
+        const weatherData = await weatherResponse.json();
+        if (!weatherResponse.ok) throw new Error(weatherData.detail || `La API respondió ${weatherResponse.status}.`);
+        document.getElementById('climateSource').textContent = `Datos históricos de ${weatherData.count} días`;
 
-      const c = await fetch(`${API}/api/weather/${iata}/climate`).then(r => r.json());
-      const names = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-      grid.innerHTML = c.months.map(m => {
-        const type = climateMonthType(m);
-        const appearance = climateMonthAppearance(type);
-        const monthName = names[parseInt(m.month, 10) - 1];
-        return `
-          <div class="climate-month climate-month--${type} rounded-xl p-3 text-center" aria-label="${monthName}: clima ${appearance.label.toLowerCase()}">
-            <div class="mb-1 inline-flex items-center justify-center gap-1 text-xs text-slate-500">
-              ${icon(appearance.icon, `h-4 w-4 ${appearance.iconClass}`)} ${monthName}
+        const climateResponse = await fetch(`${API}/api/weather/${iata}/climate`);
+        const climateData = await climateResponse.json();
+        if (!climateResponse.ok) throw new Error(climateData.detail || `La API respondió ${climateResponse.status}.`);
+        if (!Array.isArray(climateData.months) || climateData.months.length === 0) {
+          throw new Error('La API no devolvió promedios mensuales del clima.');
+        }
+
+        const names = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        grid.innerHTML = climateData.months.map(m => {
+          const type = climateMonthType(m);
+          const appearance = climateMonthAppearance(type);
+          const monthName = names[parseInt(m.month, 10) - 1];
+          return `
+            <div class="climate-month climate-month--${type} rounded-xl p-3 text-center" aria-label="${monthName}: clima ${appearance.label.toLowerCase()}">
+              <div class="mb-1 inline-flex items-center justify-center gap-1 text-xs text-slate-500">
+                ${icon(appearance.icon, `h-4 w-4 ${appearance.iconClass}`)} ${monthName}
+              </div>
+              <div class="text-lg font-semibold ${appearance.temperatureClass}">${m.tempMaxC}°C</div>
+              <div class="text-xs text-slate-400">${m.tempMinC}°C mín.</div>
+              <div class="mt-1 inline-flex items-center gap-1 text-xs text-indigo-600">${icon('droplet', 'h-3.5 w-3.5')} ${m.precipMm} mm de lluvia</div>
             </div>
-            <div class="text-lg font-semibold ${appearance.temperatureClass}">${m.tempMaxC}°C</div>
-            <div class="text-xs text-slate-400">${m.tempMinC}°C mín.</div>
-            <div class="mt-1 inline-flex items-center gap-1 text-xs text-indigo-600">${icon('droplet', 'h-3.5 w-3.5')} ${m.precipMm} mm de lluvia</div>
-          </div>
-        `;
-      }).join('');
+          `;
+        }).join('');
+      } catch (error) {
+        console.error('No se pudo cargar el clima habitual.', error);
+        document.getElementById('climateSource').textContent = '';
+        grid.innerHTML = `<p class="col-span-full text-red-500 text-sm">No pudimos cargar el clima habitual. Puedes consultar los demás resultados e intentarlo de nuevo.</p>`;
+      }
     }
 
     (async () => {
-      await loadCities();
+      try {
+        await loadCities();
+      } catch (error) {
+        console.error('No se pudo cargar el catálogo de ciudades.', error);
+        showNotice('No se pudo cargar la lista de ciudades. Actualiza la página para volver a intentarlo.');
+        document.querySelector('#searchForm button[type="submit"]').disabled = true;
+      }
     // ---------- HOTELES ----------
     function starHtml(n) {
       const count = Math.min(5, Math.max(0, Math.floor(Number(n) || 0)));
@@ -617,29 +739,31 @@
         const discount = h.priceBeforeDiscount && h.priceBeforeDiscount > h.price
           ? `<div class="text-xs text-slate-400 line-through">${money(h.priceBeforeDiscount)}</div>`
           : '';
+        const bookingUrl = bookingUrlForTrip(h.bookingUrl, 'hotel');
 
         return `
           <div class="border rounded-xl p-4 hover:border-indigo-300 transition">
             <div class="flex items-start justify-between gap-3 mb-2">
               <div class="flex-1">
-                <div class="flex items-center gap-2 mb-1">
-                  <span class="font-semibold text-sm">${h.name || 'Sin nombre'}</span>
+                <div class="mb-1 flex flex-wrap items-center gap-2">
+                  <span class="min-w-0 break-words font-semibold text-sm">${escapeHtml(h.name || 'Sin nombre')}</span>
                   ${reviewBadge(h.reviewScore)}
                 </div>
-                <div class="text-xs text-orange-400">${starHtml(h.stars)}</div>
+                <div class="text-xs text-amber-500">${starHtml(h.stars)}</div>
                 ${h.reviewCount ? `<div class="text-xs text-slate-400 mt-1">${h.reviewCount} reseñas</div>` : ''}
               </div>
             </div>
-            <div class="border-t pt-2 mt-2 flex items-end justify-between">
-              <div class="text-xs text-slate-500">
+            <div class="mt-2 flex items-end justify-between gap-2 border-t pt-2">
+              <div class="min-w-0 text-xs text-slate-500">
                 ${h.nights} noche${h.nights !== 1 ? 's' : ''} · ${h.adults} adulto${h.adults !== 1 ? 's' : ''}
               </div>
-              <div class="text-right">
+              <div class="shrink-0 text-right">
                 <div class="text-lg font-bold text-indigo-600">${money(h.pricePerNight)}<span class="text-xs font-normal text-slate-500">/noche</span></div>
                 <div class="text-xs text-slate-500">Total: ${money(h.price)}</div>
                 ${discount}
               </div>
             </div>
+            ${bookingUrl ? `<a href="${escapeHtml(bookingUrl)}" target="_blank" rel="noopener noreferrer" class="mt-2 block text-center bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition">Reservar en Booking.com →</a>` : ''}
           </div>
         `;
       };
@@ -672,7 +796,7 @@
       };
     }
 
-    async function loadHotels(iata, checkin) {
+    async function loadHotels(iata, checkin, checkout) {
       const panel = document.getElementById('hotelsPanel');
       const list = document.getElementById('hotelsList');
       const toggle = document.getElementById('toggleHotels');
@@ -681,19 +805,17 @@
       panel.classList.remove('hidden');
       list.innerHTML = `<p class="col-span-full text-slate-400 text-sm">Buscando alojamientos…</p>`;
 
-      // Calculamos checkout = checkin + 3 noches (mismo default que la prueba original)
-      const ci = new Date(checkin);
-      const co = new Date(ci.getTime() + 3 * 24 * 60 * 60 * 1000);
-      const checkout = co.toISOString().slice(0, 10);
+      const hotelCheckout = checkout || addDays(checkin, 3);
 
       try {
-        const r = await fetch(`${API}/api/hotels/${iata}?checkin=${checkin}&checkout=${checkout}`);
+        const r = await fetch(`${API}/api/hotels/${iata}?checkin=${encodeURIComponent(checkin)}&checkout=${encodeURIComponent(hotelCheckout)}`);
         if (r.status === 404) {
-          list.innerHTML = `<p class="col-span-full text-slate-400 text-sm">Aún no encontramos alojamientos para ${cityLabel(iata)} del ${formatDate(checkin)} al ${formatDate(checkout)}. Prueba otras fechas.</p>`;
+          list.innerHTML = `<p class="col-span-full text-slate-400 text-sm">Aún no encontramos alojamientos para ${cityLabel(iata)} del ${formatDate(checkin)} al ${formatDate(hotelCheckout)}. Prueba otras fechas.</p>`;
           document.getElementById('hotelsMeta').textContent = '';
           return;
         }
         const data = await r.json();
+        if (!r.ok) throw new Error(data.detail || `La API respondió ${r.status}.`);
         renderHotels(data);
       } catch (e) {
         console.error('No se pudieron cargar los alojamientos.', e);
@@ -701,23 +823,76 @@
       }
     }
 
+    const roundTripToggle = document.getElementById('roundTrip');
+    const returnDateField = document.getElementById('returnDateField');
+    const returnDateInput = document.getElementById('returnDate');
+    const departDateInput = document.getElementById('departDate');
+
+    function updateReturnDateConstraints() {
+      if (!departDateInput.value) return;
+      const minimumReturn = addDays(departDateInput.value, 1);
+      returnDateInput.min = minimumReturn;
+      if (returnDateInput.value && returnDateInput.value < minimumReturn) {
+        returnDateInput.value = '';
+      }
+    }
+
+    roundTripToggle.addEventListener('change', () => {
+      const enabled = roundTripToggle.checked;
+      returnDateField.classList.toggle('hidden', !enabled);
+      returnDateInput.disabled = !enabled;
+      returnDateInput.required = enabled;
+      if (enabled) updateReturnDateConstraints();
+    });
+    departDateInput.addEventListener('change', updateReturnDateConstraints);
+
     document.getElementById('searchForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const form = e.currentTarget;
+      if (!form.reportValidity()) return;
+
       const origin = document.getElementById('origin').value;
       const iata = document.getElementById('destination').value;
       const date = document.getElementById('departDate').value;
-      const budget = parseFloat(document.querySelector('[name=budget]').value) || 15000;
+      const adults = Number(document.getElementById('adults').value);
+      const returnDate = document.getElementById('roundTrip').checked
+        ? document.getElementById('returnDate').value
+        : '';
+      state.adults = adults;
+      state.returnDate = returnDate;
+      const checkout = returnDate || addDays(date, 3);
+      const budget = Number(document.querySelector('[name=budget]').value);
       const weatherPref = document.querySelector('[name=weatherPref]').value;
+      const submitButton = form.querySelector('button[type="submit"]');
+      const originalLabel = submitButton.textContent.trim();
+
+      submitButton.disabled = true;
+      submitButton.setAttribute('aria-busy', 'true');
+      submitButton.textContent = 'Buscando…';
+      document.getElementById('searchResults').classList.add('hidden');
+      document.getElementById('notice').classList.add('hidden');
+      document.getElementById('notice').classList.remove('flex');
       document.getElementById('searchSummaryText').textContent =
-        `Ruta: ${cityLabel(origin)} → ${cityLabel(iata)} · Salida: ${formatDate(date)} · ` +
+        `Ruta: ${cityLabel(origin)} → ${cityLabel(iata)} · Salida: ${formatDate(date)}` +
+        (returnDate ? ` · Regreso: ${formatDate(returnDate)}` : '') +
+        ` · Personas: ${adults} · ` +
         `Presupuesto: ${money(budget)} · Clima ${PREF_LABEL[weatherPref] || 'cálido'}`;
       document.getElementById('searchSummary').hidden = false;
-      await Promise.all([
-        loadClimate(iata),
-        loadFlights(iata, date),
-        loadHotels(iata, date),
-      ]);
-      await runUnifiedSearch();
+      try {
+        await Promise.all([
+          loadClimate(iata),
+          loadFlights(iata, date, adults),
+          loadHotels(iata, date, checkout),
+        ]);
+        await runUnifiedSearch({ adults, checkout });
+      } catch (error) {
+        console.error('No se pudo completar la búsqueda.', error);
+        showNotice('No se pudo completar la búsqueda. Inténtalo de nuevo.');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.removeAttribute('aria-busy');
+        submitButton.textContent = originalLabel;
+      }
     });
 
     // ---------- BÚSQUEDA UNIFICADA CON SCORE ----------
@@ -740,13 +915,15 @@
       panel.classList.remove('hidden');
 
       document.getElementById('srDest').textContent =
-        `${data.destName} (${data.destination}) · ${formatDate(data.departDate)}`;
+        `${data.destName} (${data.destination}) · ${formatDate(data.departDate)}` +
+        (state.returnDate ? ` · Regreso ${formatDate(state.returnDate)}` : '');
       document.getElementById('srTripScore').textContent =
         data.tripScore != null ? data.tripScore : '—';
       document.getElementById('srTripScore').className =
         'text-5xl font-bold text-white';
       document.getElementById('srTripDetail').innerHTML =
-        `Clima preferido: <b>${PREF_LABEL[data.weatherPref]}</b><br>` +
+        `Clima preferido: <b>${escapeHtml(PREF_LABEL[data.weatherPref] || 'sin preferencia')}</b><br>` +
+        `Personas: <b>${state.adults}</b><br>` +
         `Presupuesto: <b>$${data.budget.toLocaleString('es-MX')}</b> MXN<br>` +
         `Distribución estimada: vuelo $${data.flightBudget.toLocaleString('es-MX')} · hospedaje $${data.hotelBudget.toLocaleString('es-MX')}`;
 
@@ -764,7 +941,7 @@
             </div>
             <div>
               <div class="text-sm font-semibold text-slate-600">${mood.label}</div>
-              <h3 class="text-lg font-semibold">Clima habitual de ${w.monthName} en ${data.destName}</h3>
+              <h3 class="text-lg font-semibold">Clima habitual de ${escapeHtml(w.monthName)} en ${escapeHtml(data.destName)}</h3>
             </div>
           </div>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -797,22 +974,31 @@
         fCard.innerHTML = `<h3 class="flex items-center gap-2 text-lg font-semibold mb-3">${icon('plane', 'h-5 w-5 text-violet-500')} Vuelos recomendados</h3>` +
           data.topFlights.map((sf, i) => {
             const f = sf.flight;
+            const bookingUrl = bookingUrlForTrip(f.bookingUrl, 'flight');
             return `
-              <div class="recommendation-card border rounded-xl p-3 mb-2 ${i === 0 ? 'border-indigo-500 bg-indigo-50' : ''}">
-                <div class="flex items-start justify-between gap-2">
+              <div class="border rounded-xl p-3 mb-2 ${i === 0 ? 'border-indigo-500 bg-indigo-50' : ''}">
+                <div class="flex flex-wrap items-start justify-between gap-2">
                   <div class="min-w-0 flex-1">
-                    <div class="flex min-w-0 items-center gap-1 whitespace-nowrap font-semibold text-sm">
-                      ${airlineIdentity(f.airline)}
-                      <span class="shrink-0 text-xs text-slate-500">· ${f.flightNumber}</span>
-                    </div>
-                    <div class="text-xs text-slate-500">${hhmm(f.departTime)} → ${hhmm(f.arrivalTime)} · ${fmtDuration(f.durationMinutes)} · ${f.stops === 0 ? 'Directo' : f.stops + ' escala(s)'}</div>
+                    <div class="flex min-w-0 flex-wrap items-center gap-2 font-semibold text-sm">${airlineIdentity(f.airline)} <span class="text-xs text-slate-400">${escapeHtml(f.flightNumber)}</span></div>
+                    <div class="text-xs text-slate-500">${escapeHtml(hhmm(f.departTime))} → ${escapeHtml(hhmm(f.arrivalTime))} · ${fmtDuration(f.durationMinutes)} · ${f.stops === 0 ? 'Directo' : f.stops + ' escala(s)'}</div>
                   </div>
                   <div class="shrink-0 text-right">
                     <div class="text-lg font-bold text-indigo-600">${money(f.price)}</div>
-                    <div class="text-xs font-bold ${SCORE_COLOR(sf.finalScore)}">Puntuación: ${sf.finalScore}</div>
+                    <div class="text-xs font-bold ${SCORE_COLOR(sf.finalScore)}">Score: ${sf.finalScore}</div>
                   </div>
                 </div>
                 ${scoreBar(sf.finalScore)}
+                <div class="mt-2 flex items-center justify-between gap-2">
+                  <details class="flex-1">
+                    <summary class="inline-flex cursor-pointer items-center gap-1 text-[11px] text-indigo-600 hover:underline select-none">${icon('coins', 'h-3.5 w-3.5')} Detalles del precio</summary>
+                    <div class="mt-1 p-2 bg-white bg-opacity-70 rounded text-[11px] space-y-0.5">
+                      <div class="flex justify-between"><span>Tarifa base:</span><span>${f.baseFare != null ? money(f.baseFare) : '—'}</span></div>
+                      <div class="flex justify-between"><span>Impuestos (incl. TUA):</span><span>${f.taxes != null ? money(f.taxes) : '—'}</span></div>
+                      <div class="flex justify-between border-t pt-0.5 font-semibold"><span>Total:</span><span>${money(f.price)}</span></div>
+                    </div>
+                  </details>
+                  ${bookingUrl ? `<a href="${escapeHtml(bookingUrl)}" target="_blank" rel="noopener noreferrer" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-medium px-2 py-1 rounded whitespace-nowrap">Reservar →</a>` : ''}
+                </div>
               </div>
             `;
           }).join('');
@@ -823,28 +1009,30 @@
       // Hoteles top 3
       const hCard = document.getElementById('srHotelsCard');
       if (data.topHotels.length) {
-        hCard.innerHTML = `<h3 class="flex items-center gap-2 text-lg font-semibold mb-3">${icon('hotel', 'h-5 w-5 text-indigo-600')} Alojamientos recomendados</h3>` +
+        hCard.innerHTML = `<h3 class="flex items-center gap-2 text-lg font-semibold mb-1">${icon('hotel', 'h-5 w-5 text-indigo-600')} Alojamientos recomendados</h3><p class="mb-3 text-xs text-slate-500">Consulta disponibilidad y confirma el precio para tu grupo en <a href="https://www.booking.com/" target="_blank" rel="noopener noreferrer" class="font-medium text-indigo-600 underline hover:text-violet-500">Booking.com</a>.</p>` +
           data.topHotels.map((sh, i) => {
             const h = sh.hotel;
+            const bookingUrl = bookingUrlForTrip(h.bookingUrl, 'hotel');
             return `
-              <div class="recommendation-card border rounded-xl p-3 mb-2 ${i === 0 ? 'border-indigo-500 bg-indigo-50' : ''}">
-                <div class="flex justify-between items-start">
-                  <div class="flex-1">
-                    <div class="font-semibold text-sm">${h.name}</div>
-                    <div class="text-xs text-slate-500">${starHtml(h.stars)} · ${h.nights} noches · ${h.reviewScore ? h.reviewScore.toFixed(1) + '/10' : ''}</div>
+              <div class="border rounded-xl p-3 mb-2 ${i === 0 ? 'border-indigo-500 bg-indigo-50' : ''}">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <div class="break-words font-semibold text-sm">${escapeHtml(h.name || 'Sin nombre')}</div>
+                    <div class="flex items-center gap-1 text-xs text-slate-500">${starHtml(h.stars)} <span>· ${h.nights} noches · ${h.reviewScore ? h.reviewScore.toFixed(1) + '/10' : ''}</span></div>
                   </div>
-                  <div class="text-right">
+                  <div class="shrink-0 text-right">
                     <div class="text-lg font-bold text-indigo-600">${money(h.price)}</div>
                     <div class="text-xs text-slate-500">${money(h.pricePerNight)}/noche</div>
-                    <div class="text-xs font-bold ${SCORE_COLOR(sh.finalScore)}">Puntuación: ${sh.finalScore}</div>
+                    <div class="text-xs font-bold ${SCORE_COLOR(sh.finalScore)}">Score: ${sh.finalScore}</div>
                   </div>
                 </div>
                 ${scoreBar(sh.finalScore)}
+                ${bookingUrl ? `<a href="${escapeHtml(bookingUrl)}" target="_blank" rel="noopener noreferrer" class="mt-2 block text-center bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-medium px-2 py-1 rounded">Reservar en Booking.com →</a>` : ''}
               </div>
             `;
           }).join('');
       } else {
-        hCard.innerHTML = `<h3 class="flex items-center gap-2 text-lg font-semibold mb-3">${icon('hotel', 'h-5 w-5 text-indigo-600')} Alojamientos recomendados</h3><p class="text-slate-400 text-sm">Aún no encontramos alojamientos para estas fechas.</p>`;
+        hCard.innerHTML = `<h3 class="flex items-center gap-2 text-lg font-semibold mb-1">${icon('hotel', 'h-5 w-5 text-indigo-600')} Alojamientos recomendados</h3><p class="mb-3 text-xs text-slate-500">Consulta disponibilidad y confirma el precio para tu grupo en <a href="https://www.booking.com/" target="_blank" rel="noopener noreferrer" class="font-medium text-indigo-600 underline hover:text-violet-500">Booking.com</a>.</p><p class="text-slate-400 text-sm">Aún no encontramos alojamientos para estas fechas.</p>`;
       }
 
       // Avisos
@@ -853,28 +1041,29 @@
       }
     }
 
-    async function runUnifiedSearch() {
+    async function runUnifiedSearch({ adults, checkout }) {
       const origin = document.getElementById('origin').value;
       const destination = document.getElementById('destination').value;
       const departDate = document.getElementById('departDate').value;
-      const budget = parseFloat(document.querySelector('[name=budget]').value) || 15000;
+      const budget = Number(document.querySelector('[name=budget]').value);
       const weatherPref = document.querySelector('[name=weatherPref]')?.value || 'warm';
 
-      const panel = document.getElementById('searchResults');
-      panel.classList.remove('hidden');
-
-      const r = await fetch(`${API}/api/search/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ origin, destination, departDate, budget, weatherPref }),
-      });
-      if (!r.ok) {
-        const err = await r.json();
-        showNotice(err.detail || 'Error en búsqueda');
-        return;
+      try {
+        const response = await fetch(`${API}/api/search/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ origin, destination, departDate, checkout, adults, budget, weatherPref }),
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          showNotice(typeof data.detail === 'string' ? data.detail : 'La API no pudo completar la búsqueda.');
+          return;
+        }
+        renderSearchResults(data);
+      } catch (error) {
+        console.error('No se pudieron cargar las recomendaciones.', error);
+        showNotice('No pudimos cargar las recomendaciones. Inténtalo de nuevo en un momento.');
       }
-      const data = await r.json();
-      renderSearchResults(data);
     }
 
     })();
