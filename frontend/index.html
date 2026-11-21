@@ -3,15 +3,158 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StaySky · Clima + Presupuesto</title>
+  <title>StaySky · Planea tu viaje</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    try {
+      document.documentElement.dataset.theme =
+        localStorage.getItem('staysky-theme') === 'dark' ? 'dark' : 'light';
+    } catch (error) {
+      console.error('No se pudo recuperar el tema guardado.', error);
+      document.documentElement.dataset.theme = 'light';
+    }
+  </script>
+  <style>
+    .weather-card {
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      transition: background 0.4s ease, border-color 0.4s ease;
+    }
+    .weather-card--rain { background: linear-gradient(120deg, #eef2ff, #fff 72%); border-color: #c7d2fe; }
+    .weather-card--hot { background: linear-gradient(120deg, #fff7ed, #fff 72%); border-color: #fed7aa; }
+    .weather-card--mild { background: linear-gradient(120deg, #f5f3ff, #fff 72%); border-color: #ddd6fe; }
+    .weather-card--cold { background: linear-gradient(120deg, #eef2ff, #fff 72%); border-color: #c7d2fe; }
+    .climate-month { border: 1px solid; transition: background-color 180ms ease, border-color 180ms ease; }
+    .climate-month--hot { background-color: #fff7ed !important; border-color: #fed7aa !important; }
+    .climate-month--rain { background-color: #eef2ff !important; border-color: #c7d2fe !important; }
+    .climate-month--cold { background-color: #fff !important; border-color: #ddd6fe !important; }
+    .climate-month--mild { background-color: #f8fafc !important; border-color: #e2e8f0 !important; }
+    .climate-legend-dot { display: inline-block; width: 0.75rem; height: 0.75rem; border: 1px solid; border-radius: 0.25rem; }
+    .climate-legend-dot--hot { background: #ffedd5; border-color: #fdba74; }
+    .climate-legend-dot--rain { background: #e0e7ff; border-color: #a5b4fc; }
+    .climate-legend-dot--cold { background: #fff; border-color: #c4b5fd; }
+    .climate-legend-dot--mild { background: #f1f5f9; border-color: #cbd5e1; }
+    .recommendation-card { min-height: 6.5rem; }
+    html[data-theme="dark"] { color-scheme: dark; }
+    html[data-theme="dark"] body { background-color: #0f172a !important; color: #e2e8f0 !important; }
+    html[data-theme="dark"] .bg-white { background-color: #1e293b !important; }
+    html[data-theme="dark"] .bg-slate-50 { background-color: #0f172a !important; }
+    html[data-theme="dark"] .bg-slate-200 { background-color: #334155 !important; }
+    html[data-theme="dark"] .bg-indigo-50 { background-color: #312e81 !important; }
+    html[data-theme="dark"] .bg-orange-50 { background-color: #431407 !important; }
+    html[data-theme="dark"] .bg-green-100 { background-color: #14532d !important; }
+    html[data-theme="dark"] .bg-violet-100 { background-color: #4c1d95 !important; }
+    html[data-theme="dark"] .bg-indigo-100 { background-color: #312e81 !important; }
+    html[data-theme="dark"] .text-slate-800,
+    html[data-theme="dark"] .text-slate-700,
+    html[data-theme="dark"] .text-slate-600 { color: #e2e8f0 !important; }
+    html[data-theme="dark"] .text-slate-500,
+    html[data-theme="dark"] .text-slate-400 { color: #94a3b8 !important; }
+    html[data-theme="dark"] .text-slate-300 { color: #64748b !important; }
+    html[data-theme="dark"] .text-indigo-600 { color: #a5b4fc !important; }
+    html[data-theme="dark"] .text-indigo-700 { color: #c7d2fe !important; }
+    html[data-theme="dark"] .text-violet-500 { color: #c4b5fd !important; }
+    html[data-theme="dark"] .text-violet-700 { color: #ddd6fe !important; }
+    html[data-theme="dark"] .text-green-600,
+    html[data-theme="dark"] .text-green-700 { color: #86efac !important; }
+    html[data-theme="dark"] .text-orange-600 { color: #fdba74 !important; }
+    html[data-theme="dark"] .text-orange-800 { color: #fdba74 !important; }
+    html[data-theme="dark"] .border,
+    html[data-theme="dark"] .border-t,
+    html[data-theme="dark"] .border-slate-200,
+    html[data-theme="dark"] .border-indigo-200,
+    html[data-theme="dark"] .border-orange-200 { border-color: #475569 !important; }
+    html[data-theme="dark"] input,
+    html[data-theme="dark"] select { background-color: #0f172a; border-color: #475569; color: #e2e8f0; }
+    html[data-theme="dark"] option { background-color: #1e293b; color: #e2e8f0; }
+    html[data-theme="dark"] .weather-card--rain,
+    html[data-theme="dark"] .weather-card--cold { background: linear-gradient(120deg, #1e1b4b, #1e293b 72%); border-color: #4338ca; }
+    html[data-theme="dark"] .weather-card--hot { background: linear-gradient(120deg, #431407, #1e293b 72%); border-color: #c2410c; }
+    html[data-theme="dark"] .weather-card--mild { background: linear-gradient(120deg, #2e1065, #1e293b 72%); border-color: #6d28d9; }
+    html[data-theme="dark"] .weather-visual--rain,
+    html[data-theme="dark"] .weather-visual--cold { background: #312e81; color: #c7d2fe; }
+    html[data-theme="dark"] .weather-visual--hot { background: #7c2d12; color: #fdba74; }
+    html[data-theme="dark"] .weather-visual--mild { background: #4c1d95; color: #ddd6fe; }
+    html[data-theme="dark"] .weather-drop { color: #a5b4fc; }
+    html[data-theme="dark"] .climate-month--hot { background-color: #431407 !important; border-color: #c2410c !important; }
+    html[data-theme="dark"] .climate-month--rain { background-color: #1e1b4b !important; border-color: #4338ca !important; }
+    html[data-theme="dark"] .climate-month--cold { background-color: #f8fafc !important; border-color: #cbd5e1 !important; color: #1e293b !important; }
+    html[data-theme="dark"] .climate-month--cold .text-slate-500,
+    html[data-theme="dark"] .climate-month--cold .text-slate-400,
+    html[data-theme="dark"] .climate-month--cold .text-slate-800 { color: #475569 !important; }
+    html[data-theme="dark"] .climate-month--mild { background-color: #1e293b !important; border-color: #334155 !important; }
+    html[data-theme="dark"] .climate-legend-dot--hot { background: #431407; border-color: #c2410c; }
+    html[data-theme="dark"] .climate-legend-dot--rain { background: #1e1b4b; border-color: #4338ca; }
+    html[data-theme="dark"] .climate-legend-dot--cold { background: #f8fafc; border-color: #cbd5e1; }
+    html[data-theme="dark"] .climate-legend-dot--mild { background: #1e293b; border-color: #334155; }
+    html[data-theme="dark"] #themeToggle { background-color: #334155; border-color: #475569; color: #e2e8f0; }
+    button {
+      transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease,
+        box-shadow 180ms ease, filter 180ms ease, transform 180ms ease;
+    }
+    button:not(:disabled):hover {
+      filter: saturate(1.35) brightness(0.92);
+      box-shadow: 0 8px 18px rgb(79 70 229 / 22%);
+      transform: translateY(-1px);
+    }
+    html[data-theme="dark"] button:not(:disabled):hover {
+      filter: saturate(1.35) brightness(1.18);
+      box-shadow: 0 8px 18px rgb(129 140 248 / 22%);
+    }
+    button:focus-visible { outline: 3px solid #a5b4fc; outline-offset: 3px; }
+    .weather-visual {
+      position: relative;
+      display: grid;
+      width: 4rem;
+      height: 4rem;
+      flex: none;
+      place-items: center;
+      border-radius: 9999px;
+    }
+    .weather-visual--rain, .weather-visual--cold { color: #4f46e5; background: #e0e7ff; }
+    .weather-visual--hot { color: #fb923c; background: #ffedd5; }
+    .weather-visual--mild { color: #8b5cf6; background: #ede9fe; }
+    .weather-card--rain .weather-main-icon,
+    .weather-card--mild .weather-main-icon { animation: weather-float 2.8s ease-in-out infinite; }
+    .weather-card--hot .weather-main-icon { animation: weather-pulse 2s ease-in-out infinite; }
+    .weather-card--cold .weather-main-icon { animation: weather-spin 10s linear infinite; }
+    .weather-drop {
+      position: absolute;
+      color: #4f46e5;
+      animation: weather-rain 1.1s ease-in infinite;
+    }
+    .weather-drop--one { left: 0.6rem; bottom: -0.5rem; }
+    .weather-drop--two { right: 0.6rem; bottom: -0.7rem; animation-delay: 0.45s; }
+    @keyframes weather-float { 50% { transform: translateY(-4px); } }
+    @keyframes weather-pulse { 50% { transform: scale(1.12); } }
+    @keyframes weather-spin { to { transform: rotate(360deg); } }
+    @keyframes weather-rain {
+      0% { opacity: 0; transform: translateY(-5px); }
+      35% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(7px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .weather-main-icon, .weather-drop { animation: none !important; }
+    }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen">
 
-  <header class="bg-white shadow">
-    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-      <h1 class="text-xl font-bold">🌤️ StaySky · Clima + Presupuesto</h1>
-      <span id="status" class="text-xs text-slate-500">Conectando…</span>
+  <header class="sticky top-0 z-50 bg-white shadow">
+    <div class="max-w-6xl mx-auto px-6 py-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+      <h1 class="order-1 flex shrink-0 items-center gap-2 text-lg sm:text-xl font-bold">
+        <svg class="h-6 w-6 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="16" cy="5" r="3"></circle><path d="M16 1v1m0 6v1m4.24-6.24-.7.7m-6.08 4.24-.7.7M20 5h-1M13 5h-1"></path>
+          <path d="M20 16.5a4.5 4.5 0 0 0-8.5-2A4 4 0 1 0 5 20h13a3 3 0 0 0 2-3.5Z"></path>
+        </svg>
+        StaySky
+      </h1>
+      <div id="searchSummary" hidden role="status" aria-label="Resumen de tu búsqueda" aria-live="polite" class="order-3 basis-full min-w-0 text-left text-xs text-slate-600 md:order-2 md:basis-auto md:flex-1 md:text-center">
+        <span id="searchSummaryText"></span>
+      </div>
+      <button id="themeToggle" type="button" class="order-2 inline-flex shrink-0 items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-700 md:order-3" aria-pressed="false">
+        <span id="themeToggleContent"></span>
+      </button>
     </div>
   </header>
 
@@ -30,32 +173,74 @@
           <select name="destination" id="destination" class="w-full border rounded-lg px-3 py-2"></select>
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">Fecha de ida</label>
+          <label class="block text-sm font-medium mb-1">Fecha de salida</label>
           <input type="date" name="departDate" id="departDate" value="2027-03-12" class="w-full border rounded-lg px-3 py-2" />
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">Presupuesto (MXN)</label>
           <input type="number" name="budget" value="5000" class="w-full border rounded-lg px-3 py-2" />
         </div>
-                <div>
-          <label class="block text-sm font-medium mb-1">Clima</label>
+        <div>
+          <label class="block text-sm font-medium mb-1">¿Qué clima prefieres?</label>
           <select name="weatherPref" class="w-full border rounded-lg px-3 py-2">
             <option value="warm">Cálido (25–32°C)</option>
             <option value="mild">Templado (15–24°C)</option>
             <option value="cold">Frío (5–15°C)</option>
           </select>
         </div>
-        <button class="md:col-span-5 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium">
-          Buscar
+        <button class="md:col-span-5 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-medium">
+          Buscar mi viaje
         </button>
       </form>
+    </section>
+
+    <!-- Resultado de búsqueda unificada -->
+    <section id="searchResults" class="hidden space-y-6">
+      <div class="bg-gradient-to-r from-indigo-600 via-violet-600 to-orange-400 rounded-2xl shadow-lg p-6 text-white">
+        <p class="flex items-center gap-2 text-white/80 text-sm mb-1">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"></path><path d="m19 14 1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3Z"></path>
+          </svg>
+          Viaje recomendado
+        </p>
+        <h2 class="text-2xl font-bold mb-3" id="srDest"></h2>
+        <div class="flex items-end gap-4">
+          <div>
+            <div class="text-5xl font-bold" id="srTripScore">—</div>
+            <div class="text-white/80 text-xs mt-1">Puntuación del viaje · sobre 100</div>
+          </div>
+          <div class="text-sm text-white/80 pb-2" id="srTripDetail"></div>
+        </div>
+      </div>
+
+      <div id="srWeatherCard" class="hidden bg-white rounded-2xl shadow p-6"></div>
+
+      <div class="grid grid-cols-1 items-stretch md:grid-cols-2 gap-6">
+        <div id="srFlightsCard" class="h-full min-w-0 bg-white rounded-2xl shadow p-6"></div>
+        <div id="srHotelsCard" class="h-full min-w-0 bg-white rounded-2xl shadow p-6"></div>
+      </div>
     </section>
 
     <!-- Clima -->
     <section id="climatePanel" class="hidden bg-white rounded-2xl shadow p-6">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold">Clima típico · <span id="climateCity"></span></h2>
+        <h2 class="flex items-center gap-2 text-xl font-semibold">
+          <svg class="h-5 w-5 text-orange-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 14.76V5a2 2 0 0 0-4 0v9.76a4 4 0 1 0 4 0Z"></path><path d="M12 11v6"></path>
+          </svg>
+          Clima habitual · <span id="climateCity"></span>
+        </h2>
         <span id="climateSource" class="text-xs text-slate-400"></span>
+      </div>
+      <p class="mb-3 text-xs text-slate-500">
+        El clima habitual es una estimación basada en registros históricos de 2023; puede variar y no es un pronóstico exacto.
+      </p>
+      <div class="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500" role="group" aria-label="Leyenda del clima">
+        <span class="font-medium">Guía de colores:</span>
+        <span class="inline-flex items-center gap-1.5"><i aria-hidden="true" class="climate-legend-dot climate-legend-dot--hot"></i>Calor (máxima ≥30 °C)</span>
+        <span class="inline-flex items-center gap-1.5"><i aria-hidden="true" class="climate-legend-dot climate-legend-dot--rain"></i>Lluvia (promedio ≥1 mm al día)</span>
+        <span class="inline-flex items-center gap-1.5"><i aria-hidden="true" class="climate-legend-dot climate-legend-dot--cold"></i>Frío (máxima ≤15 °C)</span>
+        <span class="inline-flex items-center gap-1.5"><i aria-hidden="true" class="climate-legend-dot climate-legend-dot--mild"></i>Clima moderado</span>
       </div>
       <div id="climateGrid" class="grid grid-cols-2 md:grid-cols-6 gap-3"></div>
     </section>
@@ -63,69 +248,127 @@
     <!-- Vuelos -->
     <section id="flightsPanel" class="hidden bg-white rounded-2xl shadow p-6">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold">Vuelos disponibles</h2>
-        <span id="flightsMeta" class="text-xs text-slate-400"></span>
+        <h2 class="flex items-center gap-2 text-xl font-semibold">
+          <svg class="h-5 w-5 text-violet-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2 16.5 10 12V4a2 2 0 0 1 4 0v8l8 4.5v2l-8-2v3l2 1v1.5l-4-1-4 1V20l2-1v-3l-8 2v-1.5Z"></path>
+          </svg>
+          Opciones de vuelo
+        </h2>
+        <span id="flightsMeta" class="text-xs text-slate-400 sm:text-right"></span>
       </div>
       <div id="flightsList" class="space-y-3"></div>
+      <button id="toggleFlights" type="button" hidden class="mt-4 rounded-lg border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-600 transition hover:bg-indigo-50">
+        Ver todas las opciones de vuelo
+      </button>
     </section>
 
     <!-- Hoteles -->
     <section id="hotelsPanel" class="hidden bg-white rounded-2xl shadow p-6">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold">Hoteles disponibles</h2>
-        <span id="hotelsMeta" class="text-xs text-slate-400"></span>
+        <h2 class="flex items-center gap-2 text-xl font-semibold">
+          <svg class="h-5 w-5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 21V5l8-3 8 3v16"></path><path d="M9 21v-4h6v4"></path><path d="M8 8h.01M16 8h.01M8 12h.01M16 12h.01"></path>
+          </svg>
+          Alojamientos disponibles
+        </h2>
+        <span id="hotelsMeta" class="text-xs text-slate-400 sm:text-right"></span>
       </div>
-      <div id="hotelsList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+      <div id="hotelsList" class="space-y-6"></div>
+      <button id="toggleHotels" type="button" hidden class="mt-4 rounded-lg border border-indigo-200 px-4 py-2 text-sm font-medium text-indigo-600 transition hover:bg-indigo-50">
+        Ver todos los alojamientos
+      </button>
     </section>
 
-    <!-- Resultado de búsqueda unificada -->
-    <section id="searchResults" class="hidden space-y-6">
-      <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-lg p-6 text-white">
-        <p class="text-blue-100 text-sm mb-1">Viaje recomendado</p>
-        <h2 class="text-2xl font-bold mb-3" id="srDest"></h2>
-        <div class="flex items-end gap-4">
-          <div>
-            <div class="text-5xl font-bold" id="srTripScore">—</div>
-            <div class="text-blue-100 text-xs mt-1">/100 en total</div>
-          </div>
-          <div class="text-sm text-blue-100 pb-2" id="srTripDetail"></div>
-        </div>
-      </div>
-
-      <div id="srWeatherCard" class="hidden bg-white rounded-2xl shadow p-6"></div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div id="srFlightsCard" class="bg-white rounded-2xl shadow p-6"></div>
-        <div id="srHotelsCard" class="bg-white rounded-2xl shadow p-6"></div>
-      </div>
-    </section>
-
-    <!-- Después de <section id="searchResults"> -->
-    <section id="adminStats" class="hidden bg-white rounded-2xl shadow p-6">
-      <h2 class="text-xl font-semibold mb-4">📊 Estadísticas por pipeline (actualizadas por Airflow)</h2>
-      <div id="statsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-    </section>
     <!-- Aviso -->
-    <section id="notice" class="hidden bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-800"></section>
+    <section id="notice" class="hidden bg-orange-50 border border-orange-200 rounded-2xl p-4 text-sm text-orange-800"></section>
   </main>
 
   <script>
     const API = '';
     const state = { cities: [] };
+    const ICON_PATHS = {
+      alert: '<path d="M10.3 3.9 2.7 17.1A2 2 0 0 0 4.4 20h15.2a2 2 0 0 0 1.7-2.9L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4m0 4h.01"/>',
+      backpack: '<path d="M6 7V5a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v2"/><rect x="4" y="7" width="16" height="15" rx="3"/><path d="M8 11h8v4H8zM4 13H2v4h2m16-4h2v4h-2"/>',
+      check: '<path d="m5 12 4 4L19 6"/>',
+      cloudRain: '<path d="M20 16.5a4.5 4.5 0 0 0-8.5-2A4 4 0 1 0 5 20h13a3 3 0 0 0 2-3.5Z"/><path d="m8 17-1 2m6-2-1 2m6-2-1 2"/>',
+      cloudSun: '<circle cx="17" cy="5" r="3"/><path d="M17 1v1m0 6v1m4.24-6.24-.7.7m-6.08 4.24-.7.7M21 5h-1m-6 0h-1"/><path d="M20 16.5a4.5 4.5 0 0 0-8.5-2A4 4 0 1 0 5 20h13a3 3 0 0 0 2-3.5Z"/>',
+      droplet: '<path d="M12 22a7 7 0 0 0 7-7c0-4-7-13-7-13S5 11 5 15a7 7 0 0 0 7 7Z"/>',
+      hotel: '<path d="M4 21V5l8-3 8 3v16"/><path d="M9 21v-4h6v4"/><path d="M8 8h.01M16 8h.01M8 12h.01M16 12h.01"/>',
+      moon: '<path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/>',
+      plane: '<path d="M3 14.5 10 11V4a2 2 0 0 1 4 0v7l7 3.5v2l-7-1.5v3l2 1v1.5l-3-.75-3 .75V19l2-1v-3l-7 1.5z"/>',
+      snowflake: '<path d="M12 2v20M4 7l16 10M20 7 4 17"/><path d="m9 5 3-3 3 3m-6 14 3 3 3-3M4 10l-1-3 4-1m10 12 4 1-1 3M20 10l1-3-4-1M4 14l-1 3 4 1"/>',
+      sparkles: '<path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 14 1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3Z"/>',
+      star: '<path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.8 1-6.1L3.2 9.4l6.1-.9L12 3Z"/>',
+      sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>',
+      thermometer: '<path d="M14 14.76V5a2 2 0 0 0-4 0v9.76a4 4 0 1 0 4 0Z"/><path d="M12 11v6"/>',
+      wind: '<path d="M3 8h12a3 3 0 1 0-3-3"/><path d="M2 12h17a3 3 0 1 1-3 3"/><path d="M4 16h6a3 3 0 1 1-3 3"/>',
+    };
 
-    async function checkHealth() {
-      const el = document.getElementById('status');
-      try {
-        const r = await fetch(`${API}/health`);
-        const d = await r.json();
-        el.textContent = `API: ${d.status} · Mongo: ${d.mongo}`;
-        el.className = d.mongo === 'connected'
-          ? 'text-xs text-green-600 font-medium'
-          : 'text-xs text-red-600 font-medium';
-      } catch {
-        el.textContent = 'API caída';
-        el.className = 'text-xs text-red-600 font-medium';
+    function icon(name, className = 'h-5 w-5') {
+      const paths = ICON_PATHS[name];
+      if (!paths) throw new Error(`Unknown icon: ${name}`);
+      return `<svg class="${className} shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+    }
+
+    const themeToggle = document.getElementById('themeToggle');
+    const themeToggleContent = document.getElementById('themeToggleContent');
+    function setTheme(theme, persist = false) {
+      const isDark = theme === 'dark';
+      document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+      themeToggle.setAttribute('aria-pressed', String(isDark));
+      themeToggle.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+      themeToggleContent.innerHTML =
+        `${icon(isDark ? 'sun' : 'moon', 'h-4 w-4')}<span>${isDark ? 'Modo claro' : 'Modo oscuro'}</span>`;
+      if (persist) {
+        try {
+          localStorage.setItem('staysky-theme', isDark ? 'dark' : 'light');
+        } catch (error) {
+          console.error('No se pudo guardar el tema seleccionado.', error);
+        }
       }
+    }
+
+    setTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+    themeToggle.addEventListener('click', () => {
+      setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark', true);
+    });
+
+    function showNotice(message) {
+      const notice = document.getElementById('notice');
+      const iconElement = document.createElement('span');
+      const messageElement = document.createElement('span');
+      iconElement.innerHTML = icon('alert', 'h-5 w-5 text-orange-600');
+      messageElement.textContent = message;
+      notice.replaceChildren(iconElement, messageElement);
+      notice.classList.add('flex', 'items-start', 'gap-2');
+      notice.classList.remove('hidden');
+    }
+
+    function weatherMood(weather) {
+      const precipitation = Number(weather.precipMm) || 0;
+      const maximum = Number(weather.tempMaxC);
+      if (precipitation >= 2) return { type: 'rain', label: 'Lluvia frecuente', icon: 'cloudRain' };
+      if (Number.isFinite(maximum) && maximum >= 30) return { type: 'hot', label: 'Clima caluroso', icon: 'sun' };
+      if (Number.isFinite(maximum) && maximum <= 15) return { type: 'cold', label: 'Clima frío', icon: 'snowflake' };
+      return { type: 'mild', label: 'Clima templado', icon: 'cloudSun' };
+    }
+
+    function climateMonthType(month) {
+      const maximum = Number(month.tempMaxC);
+      const precipitation = Number(month.precipMm);
+      if (Number.isFinite(maximum) && maximum <= 15) return 'cold';
+      if (Number.isFinite(maximum) && maximum >= 30) return 'hot';
+      if (Number.isFinite(precipitation) && precipitation >= 1) return 'rain';
+      return 'mild';
+    }
+
+    function climateMonthAppearance(type) {
+      return {
+        hot: { icon: 'sun', label: 'Caluroso', iconClass: 'text-orange-400', temperatureClass: 'text-orange-400' },
+        rain: { icon: 'cloudRain', label: 'Lluvioso', iconClass: 'text-indigo-600', temperatureClass: 'text-indigo-600' },
+        cold: { icon: 'snowflake', label: 'Fresco', iconClass: 'text-violet-500', temperatureClass: 'text-violet-500' },
+        mild: { icon: 'cloudSun', label: 'Moderado', iconClass: 'text-slate-400', temperatureClass: 'text-slate-800' },
+      }[type];
     }
 
     async function loadCities() {
@@ -156,17 +399,53 @@
       return `${h}h ${m.toString().padStart(2, '0')}m`;
     }
 
+    function formatDate(date) {
+      const parsed = new Date(`${date}T00:00:00`);
+      return Number.isNaN(parsed.getTime())
+        ? date
+        : parsed.toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function cityLabel(iata) {
+      const city = state.cities.find(item => item.iata === iata);
+      return city ? `${city.name} (${iata})` : iata;
+    }
+
+    function airlineIdentity(airline) {
+      const code = String(airline?.code || '').toUpperCase();
+      const url = typeof airline?.logo === 'string'
+        && /^https:\/\/r-[a-z0-9-]+\.bstatic\.com\/data\/airlines_logo\/[a-z0-9]+\.png$/i.test(airline.logo)
+        ? airline.logo
+        : '';
+      const fallbackContent = code || icon('plane', 'h-4 w-4 text-indigo-600');
+      const fallback = `<span ${url ? 'hidden' : ''} class="text-xs font-bold text-indigo-600">${fallbackContent}</span>`;
+      const logo = url
+        ? `<img src="${url}" alt="" loading="lazy" class="h-full w-full object-contain" onerror="this.hidden=true;this.nextElementSibling.hidden=false">${fallback}`
+        : fallback;
+      return `<span class="inline-flex min-w-0 items-center gap-2">
+        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white p-1">${logo}</span>
+        <span class="truncate">${airline?.name || code || 'Aerolínea'}</span>
+      </span>`;
+    }
+
     function renderFlights(data) {
       const list = document.getElementById('flightsList');
       const meta = document.getElementById('flightsMeta');
-      meta.textContent = `${data.count} vuelos · ${data.origin} → ${data.destination} · ${data.departDate}`;
+      const toggle = document.getElementById('toggleFlights');
+      const flights = [...data.flights].sort((a, b) => a.price - b.price);
+      const expanded = toggle.dataset.expanded === 'true';
+      const visibleFlights = expanded ? flights : flights.slice(0, 3);
+      meta.textContent =
+        `${cityLabel(data.origin)} → ${cityLabel(data.destination)} · ${formatDate(data.departDate)} · ` +
+        `${flights.length} opciones · precio más bajo primero`;
 
-      list.innerHTML = data.flights.map(f => {
+      list.innerHTML = visibleFlights.map(f => {
         const badgesHtml = f.badges.map(b => {
           const color = b === 'CHEAPEST' ? 'bg-green-100 text-green-700'
-                     : b === 'FASTEST'  ? 'bg-purple-100 text-purple-700'
-                     : 'bg-blue-100 text-blue-700';
-          return `<span class="text-[10px] font-medium px-2 py-0.5 rounded ${color}">${b}</span>`;
+                     : b === 'FASTEST'  ? 'bg-violet-100 text-violet-700'
+                     : 'bg-indigo-100 text-indigo-700';
+          const label = { CHEAPEST: 'Menor precio', FASTEST: 'Más rápido', BEST: 'Recomendado' }[b] || b;
+          return `<span class="text-[10px] font-medium px-2 py-0.5 rounded ${color}">${label}</span>`;
         }).join(' ');
 
         const discount = f.priceBeforeDiscount && f.priceBeforeDiscount > f.price
@@ -174,18 +453,18 @@
           : '';
 
         const baggage = f.hasCheckedBaggageIncluded
-          ? '<span class="text-green-600">✅ Maleta documentada incluida</span>'
-          : '<span class="text-slate-400">🎒 Solo artículo personal</span>';
+          ? `<span class="inline-flex items-center gap-1 text-green-600">${icon('check', 'h-4 w-4')} Maleta documentada incluida</span>`
+          : `<span class="inline-flex items-center gap-1 text-slate-400">${icon('backpack', 'h-4 w-4')} Incluye solo un artículo personal</span>`;
 
         const stopsLabel = f.stops === 0 ? '<span class="text-green-600 font-medium">Directo</span>'
-                        : `<span class="text-amber-600">${f.stops} escala${f.stops > 1 ? 's' : ''}</span>`;
+                        : `<span class="text-orange-600">${f.stops} escala${f.stops > 1 ? 's' : ''}</span>`;
 
         return `
-          <div class="border rounded-xl p-4 hover:border-blue-300 transition">
+          <div class="border rounded-xl p-4 hover:border-indigo-300 transition">
             <div class="flex items-start justify-between gap-4">
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-2">
-                  <span class="font-semibold">${f.airline.name || f.airline.code}</span>
+                  ${airlineIdentity(f.airline)}
                   <span class="text-xs text-slate-400">${f.flightNumber}</span>
                   ${badgesHtml}
                 </div>
@@ -199,7 +478,7 @@
                 <div class="mt-2 text-xs">${baggage}</div>
               </div>
               <div class="text-right">
-                <div class="text-lg font-bold text-blue-700">${money(f.price)}</div>
+                <div class="text-lg font-bold text-indigo-600">${money(f.price)}</div>
                 ${discount}
                 <div class="text-xs text-slate-400 mt-1">${f.fareName || ''}</div>
               </div>
@@ -207,117 +486,147 @@
           </div>
         `;
       }).join('');
+      toggle.hidden = flights.length <= 3;
+      toggle.textContent = expanded ? 'Mostrar menos vuelos' : `Mostrar todos los vuelos (${flights.length})`;
+      toggle.setAttribute('aria-expanded', String(expanded));
+      toggle.onclick = () => {
+        toggle.dataset.expanded = expanded ? 'false' : 'true';
+        renderFlights(data);
+      };
     }
 
     async function loadFlights(iata, date) {
       const panel = document.getElementById('flightsPanel');
       const list = document.getElementById('flightsList');
+      const toggle = document.getElementById('toggleFlights');
+      const origin = document.getElementById('origin').value;
+      toggle.dataset.expanded = 'false';
+      toggle.hidden = true;
       panel.classList.remove('hidden');
-      list.innerHTML = `<p class="text-slate-400 text-sm">Buscando vuelos cacheados…</p>`;
+      document.getElementById('flightsMeta').textContent =
+        `${cityLabel(origin)} → ${cityLabel(iata)} · ${formatDate(date)}`;
+      list.innerHTML = `<p class="text-slate-400 text-sm">Buscando opciones de vuelo…</p>`;
       document.getElementById('notice').classList.add('hidden');
 
-      const origin = document.getElementById('origin').value;
       try {
         const r = await fetch(`${API}/api/flights/${origin}/${iata}?date=${date}`);
         if (r.status === 404) {
-          const err = await r.json();
           list.innerHTML = '';
-          const notice = document.getElementById('notice');
-          notice.textContent = err.detail + ' (Para la demo: importa el JSON de CUN con /api/flights/import-json)';
-          notice.classList.remove('hidden');
+          showNotice(`Aún no tenemos vuelos guardados para ${cityLabel(origin)} → ${cityLabel(iata)} el ${formatDate(date)}. Prueba otra fecha o destino.`);
           return;
         }
         const data = await r.json();
         renderFlights(data);
       } catch (e) {
-        list.innerHTML = `<p class="text-red-500 text-sm">Error: ${e.message}</p>`;
+        console.error('No se pudieron cargar los vuelos.', e);
+        list.innerHTML = `<p class="text-red-500 text-sm">No pudimos cargar los vuelos. Inténtalo de nuevo en un momento.</p>`;
       }
     }
 
     async function loadClimate(iata) {
       const panel = document.getElementById('climatePanel');
       const grid = document.getElementById('climateGrid');
-      document.getElementById('climateCity').textContent = iata;
+      document.getElementById('climateCity').textContent = cityLabel(iata);
       panel.classList.remove('hidden');
-      grid.innerHTML = `<p class="col-span-full text-slate-400 text-sm">Cargando…</p>`;
+      grid.innerHTML = `<p class="col-span-full text-slate-400 text-sm">Consultando información del clima…</p>`;
 
       const w = await fetch(`${API}/api/weather/${iata}?start_date=2023-01-01&end_date=2023-12-31`).then(r => r.json());
-      document.getElementById('climateSource').textContent = `${w.source} · ${w.count} días`;
+      document.getElementById('climateSource').textContent = `Datos históricos de ${w.count} días`;
 
       const c = await fetch(`${API}/api/weather/${iata}/climate`).then(r => r.json());
       const names = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-      grid.innerHTML = c.months.map(m => `
-        <div class="border rounded-xl p-3 text-center bg-slate-50">
-          <div class="text-xs text-slate-500 mb-1">${names[parseInt(m.month)-1]}</div>
-          <div class="text-lg font-semibold">${m.tempMaxC}°</div>
-          <div class="text-xs text-slate-400">${m.tempMinC}° min</div>
-          <div class="text-xs text-blue-500 mt-1">💧 ${m.precipMm}mm</div>
-        </div>
-      `).join('');
-    }
-
-    async function loadAdminStats() {
-      try {
-        const r = await fetch(`${API}/api/admin/stats`);
-        const stats = await r.json();
-        if (!stats.length) return;
-        document.getElementById('adminStats').classList.remove('hidden');
-        document.getElementById('statsGrid').innerHTML = stats.map(s => {
-          if (s.type === 'flight') {
-            const d = s._id;
-            return `<div class="border rounded-xl p-3 text-sm">
-              <div class="font-medium">✈️ ${d.origin} → ${d.destination} · ${d.date}</div>
-              <div class="text-xs text-slate-500 mt-1">${s.count} vuelos · desde ${money(s.minPrice)} · aerolíneas: ${(s.airlines || []).join(', ')}</div>
-            </div>`;
-          }
-          const d = s._id;
-          return `<div class="border rounded-xl p-3 text-sm">
-            <div class="font-medium">🏨 ${d.destination} · ${d.checkin} → ${d.checkout}</div>
-            <div class="text-xs text-slate-500 mt-1">${s.count} hoteles · desde ${money(s.minPrice)} · ${s.currencyMismatches || 0} con fix de moneda</div>
-          </div>`;
-        }).join('');
-      } catch {}
+      grid.innerHTML = c.months.map(m => {
+        const type = climateMonthType(m);
+        const appearance = climateMonthAppearance(type);
+        const monthName = names[parseInt(m.month, 10) - 1];
+        return `
+          <div class="climate-month climate-month--${type} rounded-xl p-3 text-center" aria-label="${monthName}: clima ${appearance.label.toLowerCase()}">
+            <div class="mb-1 inline-flex items-center justify-center gap-1 text-xs text-slate-500">
+              ${icon(appearance.icon, `h-4 w-4 ${appearance.iconClass}`)} ${monthName}
+            </div>
+            <div class="text-lg font-semibold ${appearance.temperatureClass}">${m.tempMaxC}°C</div>
+            <div class="text-xs text-slate-400">${m.tempMinC}°C mín.</div>
+            <div class="mt-1 inline-flex items-center gap-1 text-xs text-indigo-600">${icon('droplet', 'h-3.5 w-3.5')} ${m.precipMm} mm de lluvia</div>
+          </div>
+        `;
+      }).join('');
     }
 
     (async () => {
-      await checkHealth();
       await loadCities();
     // ---------- HOTELES ----------
     function starHtml(n) {
-      if (!n) return '';
-      return '⭐'.repeat(n);
+      const count = Math.min(5, Math.max(0, Math.floor(Number(n) || 0)));
+      if (!count) return '';
+      return `<span class="inline-flex items-center gap-0.5 text-orange-400">${Array.from(
+        { length: count },
+        () => icon('star', 'h-3.5 w-3.5 fill-current'),
+      ).join('')}</span>`;
     }
 
     function reviewBadge(score) {
       if (score == null) return '';
-      const color = score >= 8.5 ? 'bg-green-600'
-                  : score >= 7.5 ? 'bg-emerald-500'
-                  : score >= 6.5 ? 'bg-amber-500'
-                  : 'bg-slate-500';
-      return `<span class="${color} text-white text-xs font-bold px-2 py-0.5 rounded">${score.toFixed(1)}</span>`;
+      const color = score >= 8.5 ? 'bg-indigo-600 text-white'
+                  : score >= 7.5 ? 'bg-violet-500 text-white'
+                  : score >= 6.5 ? 'bg-orange-400 text-slate-900'
+                  : 'bg-slate-500 text-white';
+      return `<span class="${color} text-xs font-bold px-2 py-0.5 rounded">${score.toFixed(1)}</span>`;
     }
 
     function renderHotels(data) {
       const list = document.getElementById('hotelsList');
       const meta = document.getElementById('hotelsMeta');
+      const toggle = document.getElementById('toggleHotels');
+      const hotels = [...data.hotels];
+      const byPrice = hotels.slice().sort((a, b) => a.price - b.price);
+      const selected = new Set();
+      const keyOf = (hotel) => String(hotel.hotelId || hotel.name || `${hotel.price}-${hotel.pricePerNight}`);
+      const takeDistinct = (items, count) => {
+        const picked = [];
+        for (const hotel of items) {
+          const key = keyOf(hotel);
+          if (selected.has(key)) continue;
+          selected.add(key);
+          picked.push(hotel);
+          if (picked.length === count) break;
+        }
+        return picked;
+      };
+      const cheapest = takeDistinct(byPrice, 2);
+      const medianPrice = byPrice.length ? byPrice[Math.floor(byPrice.length / 2)].price : 0;
+      const regular = takeDistinct(
+        hotels.slice().sort((a, b) => Math.abs(a.price - medianPrice) - Math.abs(b.price - medianPrice)),
+        2,
+      );
+      const bestRated = takeDistinct(
+        hotels.slice().sort((a, b) =>
+          (Number(b.reviewScore) || 0) - (Number(a.reviewScore) || 0)
+          || (Number(b.reviewCount) || 0) - (Number(a.reviewCount) || 0)
+          || a.price - b.price,
+        ),
+        2,
+      );
+      const remaining = hotels.filter(hotel => !selected.has(keyOf(hotel)));
+      const expanded = toggle.dataset.expanded === 'true';
+      const destinationName = cityLabel(data.destination);
       meta.textContent =
-        `${data.count} hoteles · ${data.destination} · ${data.checkinDate} → ${data.checkoutDate}` +
-        (data.currencyMismatches > 0 ? ` · ⚠️ ${data.currencyMismatches} con fix de moneda` : '');
+        `${hotels.length} alojamientos en ${destinationName} · del ${formatDate(data.checkinDate)} al ${formatDate(data.checkoutDate)}` +
+        (data.currencyMismatches > 0 ? ` · ${data.currencyMismatches} precios convertidos a MXN` : '');
 
-      list.innerHTML = data.hotels.map(h => {
+      const renderHotelCard = (h) => {
         const discount = h.priceBeforeDiscount && h.priceBeforeDiscount > h.price
           ? `<div class="text-xs text-slate-400 line-through">${money(h.priceBeforeDiscount)}</div>`
           : '';
 
         return `
-          <div class="border rounded-xl p-4 hover:border-blue-300 transition">
+          <div class="border rounded-xl p-4 hover:border-indigo-300 transition">
             <div class="flex items-start justify-between gap-3 mb-2">
               <div class="flex-1">
                 <div class="flex items-center gap-2 mb-1">
                   <span class="font-semibold text-sm">${h.name || 'Sin nombre'}</span>
                   ${reviewBadge(h.reviewScore)}
                 </div>
-                <div class="text-xs text-amber-500">${starHtml(h.stars)}</div>
+                <div class="text-xs text-orange-400">${starHtml(h.stars)}</div>
                 ${h.reviewCount ? `<div class="text-xs text-slate-400 mt-1">${h.reviewCount} reseñas</div>` : ''}
               </div>
             </div>
@@ -326,21 +635,51 @@
                 ${h.nights} noche${h.nights !== 1 ? 's' : ''} · ${h.adults} adulto${h.adults !== 1 ? 's' : ''}
               </div>
               <div class="text-right">
-                <div class="text-lg font-bold text-blue-700">${money(h.pricePerNight)}<span class="text-xs font-normal text-slate-500">/noche</span></div>
+                <div class="text-lg font-bold text-indigo-600">${money(h.pricePerNight)}<span class="text-xs font-normal text-slate-500">/noche</span></div>
                 <div class="text-xs text-slate-500">Total: ${money(h.price)}</div>
                 ${discount}
               </div>
             </div>
           </div>
         `;
-      }).join('');
+      };
+      const renderGroup = (title, items, color) => items.length ? `
+        <section>
+          <h3 class="mb-3 text-sm font-semibold ${color}">${title}</h3>
+          <div class="grid md:grid-cols-2 gap-3">${items.map(renderHotelCard).join('')}</div>
+        </section>
+      ` : '';
+
+      list.innerHTML = [
+        renderGroup('Los más económicos', cheapest, 'text-indigo-600'),
+        renderGroup('Opciones de precio intermedio', regular, 'text-violet-500'),
+        renderGroup('Los mejor valorados', bestRated, 'text-orange-500'),
+        remaining.length ? `<section id="additionalHotels" class="${expanded ? '' : 'hidden'}">
+          <h3 class="mb-3 text-sm font-semibold text-slate-600">Más opciones de hospedaje</h3>
+          <div class="grid md:grid-cols-2 gap-3">${remaining.map(renderHotelCard).join('')}</div>
+        </section>` : '',
+      ].join('');
+      toggle.hidden = remaining.length === 0;
+      toggle.dataset.expanded = String(expanded);
+      toggle.textContent = expanded ? 'Mostrar menos alojamientos' : `Ver todos los alojamientos (${remaining.length})`;
+      toggle.setAttribute('aria-expanded', String(expanded));
+      toggle.onclick = () => {
+        const showAll = toggle.dataset.expanded !== 'true';
+        toggle.dataset.expanded = String(showAll);
+        document.getElementById('additionalHotels')?.classList.toggle('hidden', !showAll);
+        toggle.textContent = showAll ? 'Mostrar menos alojamientos' : `Ver todos los alojamientos (${remaining.length})`;
+        toggle.setAttribute('aria-expanded', String(showAll));
+      };
     }
 
     async function loadHotels(iata, checkin) {
       const panel = document.getElementById('hotelsPanel');
       const list = document.getElementById('hotelsList');
+      const toggle = document.getElementById('toggleHotels');
+      toggle.dataset.expanded = 'false';
+      toggle.hidden = true;
       panel.classList.remove('hidden');
-      list.innerHTML = `<p class="col-span-full text-slate-400 text-sm">Buscando hoteles cacheados…</p>`;
+      list.innerHTML = `<p class="col-span-full text-slate-400 text-sm">Buscando alojamientos…</p>`;
 
       // Calculamos checkout = checkin + 3 noches (mismo default que la prueba original)
       const ci = new Date(checkin);
@@ -350,21 +689,29 @@
       try {
         const r = await fetch(`${API}/api/hotels/${iata}?checkin=${checkin}&checkout=${checkout}`);
         if (r.status === 404) {
-          list.innerHTML = `<p class="col-span-full text-slate-400 text-sm">Sin hoteles cacheados para ${iata} (${checkin} → ${checkout}).</p>`;
+          list.innerHTML = `<p class="col-span-full text-slate-400 text-sm">Aún no encontramos alojamientos para ${cityLabel(iata)} del ${formatDate(checkin)} al ${formatDate(checkout)}. Prueba otras fechas.</p>`;
           document.getElementById('hotelsMeta').textContent = '';
           return;
         }
         const data = await r.json();
         renderHotels(data);
       } catch (e) {
-        list.innerHTML = `<p class="col-span-full text-red-500 text-sm">Error: ${e.message}</p>`;
+        console.error('No se pudieron cargar los alojamientos.', e);
+        list.innerHTML = `<p class="col-span-full text-red-500 text-sm">No pudimos cargar los alojamientos. Inténtalo de nuevo en un momento.</p>`;
       }
     }
 
     document.getElementById('searchForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const origin = document.getElementById('origin').value;
       const iata = document.getElementById('destination').value;
       const date = document.getElementById('departDate').value;
+      const budget = parseFloat(document.querySelector('[name=budget]').value) || 15000;
+      const weatherPref = document.querySelector('[name=weatherPref]').value;
+      document.getElementById('searchSummaryText').textContent =
+        `Ruta: ${cityLabel(origin)} → ${cityLabel(iata)} · Salida: ${formatDate(date)} · ` +
+        `Presupuesto: ${money(budget)} · Clima ${PREF_LABEL[weatherPref] || 'cálido'}`;
+      document.getElementById('searchSummary').hidden = false;
       await Promise.all([
         loadClimate(iata),
         loadFlights(iata, date),
@@ -375,16 +722,14 @@
 
     // ---------- BÚSQUEDA UNIFICADA CON SCORE ----------
     const PREF_LABEL = { warm: 'cálido', mild: 'templado', cold: 'frío' };
-    const SCORE_COLOR = (n) => n >= 80 ? 'text-green-400'
-                          : n >= 60 ? 'text-blue-200'
-                          : n >= 40 ? 'text-amber-300'
-                          : 'text-red-400';
+    const SCORE_COLOR = (n) => n >= 80 ? 'text-indigo-600'
+                          : n >= 60 ? 'text-violet-500'
+                          : 'text-orange-400';
 
     function scoreBar(n) {
-      const color = n >= 80 ? 'bg-green-500'
-                  : n >= 60 ? 'bg-blue-500'
-                  : n >= 40 ? 'bg-amber-500'
-                  : 'bg-red-500';
+      const color = n >= 80 ? 'bg-indigo-600'
+                  : n >= 60 ? 'bg-violet-500'
+                  : 'bg-orange-400';
       return `<div class="w-full bg-slate-200 rounded-full h-1.5 mt-1">
         <div class="${color} h-1.5 rounded-full" style="width:${n}%"></div>
       </div>`;
@@ -395,42 +740,52 @@
       panel.classList.remove('hidden');
 
       document.getElementById('srDest').textContent =
-        `${data.destName} (${data.destination}) · ${data.departDate}`;
+        `${data.destName} (${data.destination}) · ${formatDate(data.departDate)}`;
       document.getElementById('srTripScore').textContent =
         data.tripScore != null ? data.tripScore : '—';
       document.getElementById('srTripScore').className =
-        `text-5xl font-bold ${SCORE_COLOR(data.tripScore || 0)}`;
+        'text-5xl font-bold text-white';
       document.getElementById('srTripDetail').innerHTML =
-        `Preferencia: <b>${PREF_LABEL[data.weatherPref]}</b><br>` +
+        `Clima preferido: <b>${PREF_LABEL[data.weatherPref]}</b><br>` +
         `Presupuesto: <b>$${data.budget.toLocaleString('es-MX')}</b> MXN<br>` +
-        `Reparto: vuelo $${data.flightBudget.toLocaleString('es-MX')} · hotel $${data.hotelBudget.toLocaleString('es-MX')}`;
+        `Distribución estimada: vuelo $${data.flightBudget.toLocaleString('es-MX')} · hospedaje $${data.hotelBudget.toLocaleString('es-MX')}`;
 
       // Clima
       const wCard = document.getElementById('srWeatherCard');
       if (data.weather) {
         const w = data.weather;
-        wCard.classList.remove('hidden');
+        const mood = weatherMood(w);
+        wCard.className = `weather-card weather-card--${mood.type} rounded-2xl shadow p-6`;
         wCard.innerHTML = `
-          <h3 class="text-lg font-semibold mb-3">🌡️ Clima típico de ${w.monthName} en ${data.destName}</h3>
+          <div class="flex items-start gap-4 mb-5">
+            <div class="weather-visual weather-visual--${mood.type}">
+              ${icon(mood.icon, 'weather-main-icon h-8 w-8')}
+              ${mood.type === 'rain' ? `${icon('droplet', 'weather-drop weather-drop--one h-4 w-4')}${icon('droplet', 'weather-drop weather-drop--two h-4 w-4')}` : ''}
+            </div>
+            <div>
+              <div class="text-sm font-semibold text-slate-600">${mood.label}</div>
+              <h3 class="text-lg font-semibold">Clima habitual de ${w.monthName} en ${data.destName}</h3>
+            </div>
+          </div>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <div><div class="text-slate-500 text-xs">Temp. máxima</div><div class="text-xl font-bold">${w.tempMaxC}°C</div></div>
+            <div><div class="text-slate-500 text-xs">Temp. máxima</div><div class="text-xl font-bold text-orange-400">${w.tempMaxC}°C</div></div>
             <div><div class="text-slate-500 text-xs">Temp. mínima</div><div class="text-xl font-bold">${w.tempMinC}°C</div></div>
             <div><div class="text-slate-500 text-xs">Lluvia</div><div class="text-xl font-bold">${w.precipMm}mm</div></div>
             <div><div class="text-slate-500 text-xs">Viento</div><div class="text-xl font-bold">${w.windKmh}km/h</div></div>
           </div>
           <div class="mt-4 p-3 bg-slate-50 rounded-lg">
             <div class="flex justify-between text-sm mb-1">
-              <span>Score climático para <b>${PREF_LABEL[data.weatherPref]}</b></span>
+              <span>Afinidad con tu preferencia de clima</span>
               <span class="font-bold">${w.score.total}/100</span>
             </div>
             ${scoreBar(w.score.total)}
             <div class="grid grid-cols-3 gap-2 text-xs text-slate-500 mt-2">
-              <div>🌡️ Temp: ${w.score.temp_score}</div>
-              <div>💧 Lluvia: ${w.score.rain_score}</div>
-              <div>💨 Viento: ${w.score.wind_score}</div>
+              <div class="inline-flex items-center gap-1">${icon('thermometer', 'h-3.5 w-3.5 text-orange-400')} Temperatura: ${w.score.temp_score}</div>
+              <div class="inline-flex items-center gap-1">${icon('droplet', 'h-3.5 w-3.5 text-violet-500')} Lluvia: ${w.score.rain_score}</div>
+              <div class="inline-flex items-center gap-1">${icon('wind', 'h-3.5 w-3.5 text-indigo-600')} Viento: ${w.score.wind_score}</div>
             </div>
           </div>
-          <p class="text-xs text-slate-400 mt-2">Basado en ${w.daysAnalyzed} días históricos (2023 como proxy estacional)</p>
+          <p class="text-xs text-slate-400 mt-2">Estimación basada en ${w.daysAnalyzed} días de registros históricos de 2023.</p>
         `;
       } else {
         wCard.classList.add('hidden');
@@ -439,19 +794,22 @@
       // Vuelos top 3
       const fCard = document.getElementById('srFlightsCard');
       if (data.topFlights.length) {
-        fCard.innerHTML = `<h3 class="text-lg font-semibold mb-3">✈️ Top 3 vuelos por score</h3>` +
+        fCard.innerHTML = `<h3 class="flex items-center gap-2 text-lg font-semibold mb-3">${icon('plane', 'h-5 w-5 text-violet-500')} Vuelos recomendados</h3>` +
           data.topFlights.map((sf, i) => {
             const f = sf.flight;
             return `
-              <div class="border rounded-xl p-3 mb-2 ${i === 0 ? 'border-blue-500 bg-blue-50' : ''}">
-                <div class="flex justify-between items-start">
-                  <div>
-                    <div class="font-semibold text-sm">${f.airline.name || f.airline.code} · ${f.flightNumber}</div>
+              <div class="recommendation-card border rounded-xl p-3 mb-2 ${i === 0 ? 'border-indigo-500 bg-indigo-50' : ''}">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <div class="flex min-w-0 items-center gap-1 whitespace-nowrap font-semibold text-sm">
+                      ${airlineIdentity(f.airline)}
+                      <span class="shrink-0 text-xs text-slate-500">· ${f.flightNumber}</span>
+                    </div>
                     <div class="text-xs text-slate-500">${hhmm(f.departTime)} → ${hhmm(f.arrivalTime)} · ${fmtDuration(f.durationMinutes)} · ${f.stops === 0 ? 'Directo' : f.stops + ' escala(s)'}</div>
                   </div>
-                  <div class="text-right">
-                    <div class="text-lg font-bold text-blue-700">${money(f.price)}</div>
-                    <div class="text-xs font-bold ${SCORE_COLOR(sf.finalScore)}" style="color:${sf.finalScore>=80?'#16a34a':sf.finalScore>=60?'#2563eb':sf.finalScore>=40?'#d97706':'#dc2626'}">Score: ${sf.finalScore}</div>
+                  <div class="shrink-0 text-right">
+                    <div class="text-lg font-bold text-indigo-600">${money(f.price)}</div>
+                    <div class="text-xs font-bold ${SCORE_COLOR(sf.finalScore)}">Puntuación: ${sf.finalScore}</div>
                   </div>
                 </div>
                 ${scoreBar(sf.finalScore)}
@@ -459,26 +817,26 @@
             `;
           }).join('');
       } else {
-        fCard.innerHTML = `<h3 class="text-lg font-semibold mb-3">✈️ Vuelos</h3><p class="text-slate-400 text-sm">Sin vuelos cacheados para esta ruta/fecha.</p>`;
+        fCard.innerHTML = `<h3 class="flex items-center gap-2 text-lg font-semibold mb-3">${icon('plane', 'h-5 w-5 text-violet-500')} Vuelos recomendados</h3><p class="text-slate-400 text-sm">Aún no encontramos vuelos para esta ruta y fecha.</p>`;
       }
 
       // Hoteles top 3
       const hCard = document.getElementById('srHotelsCard');
       if (data.topHotels.length) {
-        hCard.innerHTML = `<h3 class="text-lg font-semibold mb-3">🏨 Top 3 hoteles por score</h3>` +
+        hCard.innerHTML = `<h3 class="flex items-center gap-2 text-lg font-semibold mb-3">${icon('hotel', 'h-5 w-5 text-indigo-600')} Alojamientos recomendados</h3>` +
           data.topHotels.map((sh, i) => {
             const h = sh.hotel;
             return `
-              <div class="border rounded-xl p-3 mb-2 ${i === 0 ? 'border-blue-500 bg-blue-50' : ''}">
+              <div class="recommendation-card border rounded-xl p-3 mb-2 ${i === 0 ? 'border-indigo-500 bg-indigo-50' : ''}">
                 <div class="flex justify-between items-start">
                   <div class="flex-1">
                     <div class="font-semibold text-sm">${h.name}</div>
-                    <div class="text-xs text-slate-500">${'⭐'.repeat(h.stars || 0)} · ${h.nights} noches · ${h.reviewScore ? h.reviewScore.toFixed(1) + '/10' : ''}</div>
+                    <div class="text-xs text-slate-500">${starHtml(h.stars)} · ${h.nights} noches · ${h.reviewScore ? h.reviewScore.toFixed(1) + '/10' : ''}</div>
                   </div>
                   <div class="text-right">
-                    <div class="text-lg font-bold text-blue-700">${money(h.price)}</div>
+                    <div class="text-lg font-bold text-indigo-600">${money(h.price)}</div>
                     <div class="text-xs text-slate-500">${money(h.pricePerNight)}/noche</div>
-                    <div class="text-xs font-bold" style="color:${sh.finalScore>=80?'#16a34a':sh.finalScore>=60?'#2563eb':sh.finalScore>=40?'#d97706':'#dc2626'}">Score: ${sh.finalScore}</div>
+                    <div class="text-xs font-bold ${SCORE_COLOR(sh.finalScore)}">Puntuación: ${sh.finalScore}</div>
                   </div>
                 </div>
                 ${scoreBar(sh.finalScore)}
@@ -486,14 +844,12 @@
             `;
           }).join('');
       } else {
-        hCard.innerHTML = `<h3 class="text-lg font-semibold mb-3">🏨 Hoteles</h3><p class="text-slate-400 text-sm">Sin hoteles cacheados para estas fechas.</p>`;
+        hCard.innerHTML = `<h3 class="flex items-center gap-2 text-lg font-semibold mb-3">${icon('hotel', 'h-5 w-5 text-indigo-600')} Alojamientos recomendados</h3><p class="text-slate-400 text-sm">Aún no encontramos alojamientos para estas fechas.</p>`;
       }
 
       // Avisos
       if (data.warnings.length) {
-        const notice = document.getElementById('notice');
-        notice.innerHTML = '⚠️ ' + data.warnings.join('<br>⚠️ ');
-        notice.classList.remove('hidden');
+        showNotice(data.warnings.join(' · '));
       }
     }
 
@@ -514,16 +870,13 @@
       });
       if (!r.ok) {
         const err = await r.json();
-        const notice = document.getElementById('notice');
-        notice.textContent = '⚠️ ' + (err.detail || 'Error en búsqueda');
-        notice.classList.remove('hidden');
+        showNotice(err.detail || 'Error en búsqueda');
         return;
       }
       const data = await r.json();
       renderSearchResults(data);
     }
 
-    loadAdminStats();
     })();
   </script>
 </body>

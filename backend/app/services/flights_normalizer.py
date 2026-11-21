@@ -32,12 +32,16 @@ def extract_offers(payload: dict) -> tuple[list[dict], dict | None]:
 
 
 def _get_airline_from_leg(leg: dict) -> dict:
-    """Extrae {code, name} del primer carrier disponible en un leg."""
+    """Extrae la identidad del primer carrier disponible en un leg."""
     carriers_data = leg.get("carriersData") or []
     if carriers_data:
         c = carriers_data[0]
-        return {"code": c.get("code", ""), "name": c.get("name", "")}
-    return {"code": "", "name": ""}
+        return {
+            "code": c.get("code", ""),
+            "name": c.get("name", ""),
+            "logo": c.get("logo") or c.get("logoUrl", ""),
+        }
+    return {"code": "", "name": "", "logo": ""}
 
 
 def _get_flight_number(leg: dict, airline_code: str) -> str:

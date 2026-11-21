@@ -7,7 +7,7 @@ from fastapi import APIRouter, Query
 from app.db import db, flights_col, hotels_col, utcnow
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
-stats_col = db["stats"]
+stats_col = db["pipeline_stats"]
 pipeline_runs_col = db["pipeline_runs"]
 
 
