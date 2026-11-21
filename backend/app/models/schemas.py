@@ -63,3 +63,33 @@ class FlightsResponse(BaseModel):
     count: int
     aggregation: dict | None = None
     flights: list[FlightSummary]
+
+
+class HotelSummary(BaseModel):
+    """Versión resumida para listados."""
+    destination: str
+    checkinDate: str
+    checkoutDate: str
+    hotelId: int | None = None
+    name: str
+    stars: int | None = None
+    reviewScore: float | None = None
+    reviewCount: int | None = None
+    currency: str
+    price: float
+    pricePerNight: float | None = None
+    priceBeforeDiscount: float | None = None
+    nights: int
+    adults: int
+    currencyMismatch: bool = False
+    declaredCurrency: str | None = None
+
+
+class HotelsResponse(BaseModel):
+    destination: str
+    checkinDate: str
+    checkoutDate: str
+    source: str
+    count: int
+    currencyMismatches: int = 0
+    hotels: list[HotelSummary]
