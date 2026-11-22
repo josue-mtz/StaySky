@@ -17,10 +17,10 @@ from app.services.hotels_normalizer import normalize_hotels
 
 router = APIRouter(prefix="/api/hotels", tags=["hotels"])
 
-# Booking dest_ids conocidos (para /refresh; opcional)
+# Identificadores de ciudad confirmados con searchDestination de Booking.
 BOOKING_DEST_IDS = {
-    "CUN": "-1655011",   # Cancún — confirmado en tu prueba original
-    # Los demás se pueden agregar cuando se necesiten
+    "CUN": "-1655011",
+    "OAX": "-1685634",
 }
 
 # Endpoint RapidAPI Booking Hotels (ajusta si tu suscripción usa otro path)
@@ -45,7 +45,7 @@ async def _save_hotels(docs: list[dict]) -> int:
 
 
 async def _log_api_call(params: dict) -> None:
-    """Registra cada request real. Se suma al pool global de 20."""
+    """Registra una respuesta de hoteles obtenida mediante RapidAPI."""
     await usage_col.insert_one(
         {"endpoint": "hotels", "params": params, "timestamp": utcnow()}
     )
@@ -56,6 +56,7 @@ async def _log_api_call(params: dict) -> None:
     summary="Fechas con hoteles cacheados para un destino",
 )
 async def available_dates(destination: str):
+    """Lista los periodos de estancia cacheados para un destino."""
     pipeline = [
         {"$match": {"destination": destination.upper()}},
         {"$group": {
@@ -85,6 +86,7 @@ async def available_dates(destination: str):
     summary="Auditoría del bug USD/MXN: cuántos hoteles tuvieron moneda inconsistente",
 )
 async def currency_audit(destination: str):
+    """Cuenta discrepancias de moneda y devuelve ejemplos de hoteles."""
     dest = destination.upper()
     total = await hotels_col.count_documents({"destination": dest})
     mismatches = await hotels_col.count_documents(
@@ -115,6 +117,7 @@ async def get_hotels(
     checkout: str = Query(..., description="YYYY-MM-DD"),
     sort: str = Query("price", description="price | rating | stars"),
 ):
+    """Lista hoteles cacheados para el destino y fechas solicitados."""
     dest = destination.upper()
 
     cursor = hotels_col.find(
@@ -174,6 +177,7 @@ async def import_hotels_json(
     adults: int = Query(2, ge=1, le=9),
     payload: dict = Body(..., description="JSON crudo de Booking Hotels"),
 ):
+    """Normaliza e importa un JSON local de hoteles sin llamar a RapidAPI."""
     docs, meta = normalize_hotels(
         payload, destination.upper(), checkin, checkout, adults
     )
@@ -211,7 +215,7 @@ async def import_hotels_json(
 
 @router.post(
     "/refresh",
-    summary="CONSUME 1 REQUEST · Llama RapidAPI Booking Hotels",
+    summary="Consulta RapidAPI con confirmación y guarda hoteles",
 )
 async def refresh_hotels(
     destination: str = Query(...),
@@ -224,9 +228,14 @@ async def refresh_hotels(
         description="Booking dest_id. Si no se pasa, se busca en tabla interna.",
     ),
 ):
+    """Consulta RapidAPI y guarda hoteles tras confirmación explícita.
+
+    StaySky no impone un máximo local de llamadas; la cuota y las condiciones
+    del plan RapidAPI siguen controlando las solicitudes externas.
+    """
     if confirm.lower() != "yes":
         raise HTTPException(
-            400, "Confirmación requerida. Agrega ?confirm=yes para consumir 1 request."
+            400, "Confirmación requerida. Agrega ?confirm=yes para consultar RapidAPI."
         )
 
     dest = destination.upper()
@@ -243,15 +252,11 @@ async def refresh_hotels(
     if not settings.rapidapi_key:
         raise HTTPException(500, "RAPIDAPI_KEY no configurada")
 
-    # Cuota
+    # Uso acumulado para informar al usuario; no se aplica un límite local.
     total_used = await usage_col.count_documents({"endpoint": {"$ne": "SEED"}})
     seed_doc = await usage_col.find_one({"endpoint": "SEED"})
     if seed_doc:
         total_used += seed_doc.get("used_before", 0)
-    if total_used >= 20:
-        raise HTTPException(
-            429, f"Cuota agotada ({total_used}/20). No más llamadas a RapidAPI."
-        )
 
     # Llamar API
     url = f"https://{settings.rapidapi_host}{HOTELS_ENDPOINT}"
@@ -309,5 +314,5 @@ async def refresh_hotels(
         "checkout": checkout,
         "currency_mismatches_detected": mismatches,
         "requests_used_total": total_used + 1,
-        "requests_remaining": 20 - (total_used + 1),
+        "local_limit_enforced": False,
     }

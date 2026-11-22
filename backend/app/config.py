@@ -1,8 +1,10 @@
+"""Configuración tipada cargada desde las variables de entorno del servicio."""
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """Lee variables de entorno desde .env."""
+    """Carga configuración desde variables de entorno y el archivo `.env`."""
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     mongo_url: str = "mongodb://mongo:27017"

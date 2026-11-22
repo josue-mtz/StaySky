@@ -1,3 +1,5 @@
+"""Punto de entrada de FastAPI: ciclo de vida, rutas y archivos estáticos."""
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -14,6 +16,7 @@ client = AsyncIOMotorClient(settings.mongo_url)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """Prepara índices al iniciar y cierra la conexión con Mongo al terminar."""
     await ensure_indexes()
     yield
     client.close()
@@ -35,6 +38,7 @@ app.include_router(admin.router)
 
 @app.get("/health", tags=["infra"])
 async def health():
+    """Devuelve el estado de la API y comprueba la conexión con MongoDB."""
     try:
         await client.admin.command("ping")
         mongo_status = "connected"
@@ -45,4 +49,5 @@ async def health():
 
 @app.get("/", include_in_schema=False)
 async def root():
+    """Sirve la página principal de StaySky."""
     return FileResponse("frontend/index.html")

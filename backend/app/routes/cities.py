@@ -32,6 +32,7 @@ SEED_CITIES = [
 
 @router.get("", summary="Lista todas las ciudades del catálogo")
 async def list_cities():
+    """Lista las ciudades ordenadas alfabéticamente."""
     cursor = cities_col.find({}, {"_id": 0}).sort("name", 1)
     return await cursor.to_list(length=200)
 
@@ -50,6 +51,7 @@ async def seed_cities():
 
 @router.get("/{iata}", summary="Detalle de una ciudad")
 async def get_city(iata: str):
+    """Busca una ciudad por IATA o responde 404 si no existe."""
     doc = await cities_col.find_one({"iata": iata.upper()}, {"_id": 0})
     if not doc:
         raise HTTPException(404, f"Ciudad {iata} no encontrada")

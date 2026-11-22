@@ -3,6 +3,8 @@ from pydantic import BaseModel, Field
 
 
 class City(BaseModel):
+    """Ciudad disponible en el catálogo, identificada por su código IATA."""
+
     iata: str = Field(..., min_length=3, max_length=3)
     name: str
     state: str
@@ -14,6 +16,8 @@ class City(BaseModel):
 
 
 class DailyWeather(BaseModel):
+    """Registro climático de un día para una ciudad."""
+
     city: str
     date: str            # YYYY-MM-DD
     tempMaxC: float
@@ -26,6 +30,8 @@ class DailyWeather(BaseModel):
 
 
 class WeatherResponse(BaseModel):
+    """Respuesta con el origen y los registros diarios del clima."""
+
     city: str
     source: str          # "cache" | "api"
     count: int
@@ -59,6 +65,8 @@ class FlightSummary(BaseModel):
 
 
 class FlightsResponse(BaseModel):
+    """Lista de vuelos cacheados para una ruta y fecha."""
+
     origin: str
     destination: str
     departDate: str
@@ -90,6 +98,8 @@ class HotelSummary(BaseModel):
 
 
 class HotelsResponse(BaseModel):
+    """Lista de hoteles cacheados para destino y fechas de estancia."""
+
     destination: str
     checkinDate: str
     checkoutDate: str
@@ -100,6 +110,8 @@ class HotelsResponse(BaseModel):
 
 
 class WeatherSummary(BaseModel):
+    """Resumen mensual del clima y su puntuación para la preferencia elegida."""
+
     month: str
     monthName: str
     tempMaxC: float
@@ -111,6 +123,8 @@ class WeatherSummary(BaseModel):
 
 
 class SearchRequest(BaseModel):
+    """Parámetros validados para combinar vuelos, hoteles y clima."""
+
     origin: str = Field(..., min_length=3, max_length=3)
     destination: str = Field(..., min_length=3, max_length=3)
     departDate: str = Field(..., pattern=r"^\d{4}-\d{2}-\d{2}$")
@@ -122,6 +136,8 @@ class SearchRequest(BaseModel):
 
 
 class ScoredFlight(BaseModel):
+    """Vuelo junto con sus puntuaciones de precio, clima y total."""
+
     flight: FlightSummary
     priceScore: float
     weatherScore: float
@@ -129,6 +145,8 @@ class ScoredFlight(BaseModel):
 
 
 class ScoredHotel(BaseModel):
+    """Hotel junto con sus puntuaciones de precio, clima y total."""
+
     hotel: HotelSummary
     priceScore: float
     weatherScore: float
@@ -136,6 +154,8 @@ class ScoredHotel(BaseModel):
 
 
 class SearchResponse(BaseModel):
+    """Recomendaciones y métricas devueltas por la búsqueda unificada."""
+
     origin: str
     destination: str
     destName: str

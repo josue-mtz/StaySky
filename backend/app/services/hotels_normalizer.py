@@ -21,7 +21,7 @@ def _to_float(v) -> float | None:
 
 
 def _calc_nights(checkin: str, checkout: str) -> int:
-    """Diferencia en días. Devuelve 0 si hay error."""
+    """Devuelve la diferencia entre fechas, o cero si no se pueden parsear."""
     try:
         return (date_cls.fromisoformat(checkout) - date_cls.fromisoformat(checkin)).days
     except Exception:

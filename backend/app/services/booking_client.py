@@ -1,15 +1,14 @@
 """
 Cliente HTTP para Booking.com Flights vía RapidAPI.
 
-    PLAN BASIC: 20 requests/mes. Cada llamada cuenta.
-    Solo llamar desde /api/flights/refresh con confirmación explícita.
+Las consultas externas deben pasar por la ruta de refresh, que exige
+confirmación. La cuota y los límites del proveedor siguen aplicando.
 """
 import httpx
 
 from app.config import settings
 
-# Endpoint confirmado en la consola de RapidAPI Booking.com15.
-# Si algún día cambia, solo modificas esta constante.
+# Endpoint de búsqueda de vuelos configurado para la integración Booking/RapidAPI.
 FLIGHTS_ENDPOINT = "/api/v1/flights/searchFlights"
 
 
@@ -42,7 +41,7 @@ async def search_flights(
         "departDate": depart_date,
         "adults": str(adults),
         "cabinClass": "ECONOMY",
-        "currency": currency,
+        "currency_code": currency,
         "sort": "BEST",
     }
 

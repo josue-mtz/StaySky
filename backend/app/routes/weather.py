@@ -19,6 +19,7 @@ async def get_weather(
     end_date: str = Query("2023-12-31", description="YYYY-MM-DD"),
     refresh: bool = Query(False, description="Fuerza llamada a la API"),
 ):
+    """Devuelve clima diario desde caché o consulta Open-Meteo si hace falta."""
     iata = iata.upper()
 
     # 1) Validar ciudad

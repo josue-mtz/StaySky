@@ -15,7 +15,7 @@ pipeline_runs_col = db["pipeline_runs"]
 async def rebuild_stats(scope: str = Query("all", pattern="^(all|flights|hotels)$")):
     """
     Agrega los datos cacheados en vuelos y hoteles y guarda resúmenes
-    en la colección `stats`. Lo llaman los DAGs diariamente.
+    en la colección `pipeline_stats`. Lo llaman los DAGs periódicamente.
     """
     result: dict = {"scope": scope, "flights": None, "hotels": None, "timestamp": utcnow()}
 
@@ -77,6 +77,7 @@ async def rebuild_stats(scope: str = Query("all", pattern="^(all|flights|hotels)
 
 @router.get("/stats", summary="Ver resúmenes computados")
 async def list_stats(type: str | None = Query(None, pattern="^(flight|hotel)$")):
+    """Lista las estadísticas agregadas, opcionalmente filtradas por tipo."""
     query = {"type": type} if type else {}
     cursor = stats_col.find(query, {"_id": 0, "updatedAt": 0}).sort("key", 1)
     return await cursor.to_list(length=200)
@@ -84,5 +85,6 @@ async def list_stats(type: str | None = Query(None, pattern="^(flight|hotel)$"))
 
 @router.get("/pipeline-runs", summary="Historial de ejecuciones (auditoría)")
 async def pipeline_runs(limit: int = Query(20, ge=1, le=100)):
+    """Devuelve las ejecuciones recientes registradas por los pipelines."""
     cursor = pipeline_runs_col.find({}, {"_id": 0}).sort("timestamp", -1).limit(limit)
     return await cursor.to_list(length=limit)

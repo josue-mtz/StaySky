@@ -1,0 +1,1 @@
+"""Clientes externos, normalizadores y reglas de negocio de StaySky."""

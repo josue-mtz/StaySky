@@ -15,6 +15,7 @@ CONFIRM_REFRESH = os.getenv("STAYSKY_CONFIRM_REFRESH", "false").lower() == "true
 
 
 def rebuild_hotel_stats(**context):
+    """Solicita al backend reconstruir estadísticas de hoteles cacheados."""
     with httpx.Client(timeout=60) as client:
         r = client.post(f"{BACKEND}/api/admin/rebuild-stats?scope=hotels")
         r.raise_for_status()
@@ -35,6 +36,7 @@ def audit_currency_mismatches(**context):
 
 
 def optional_refresh_one_destination(**context):
+    """Mantiene desactivada la consulta pagada de hoteles en este DAG."""
     if not CONFIRM_REFRESH:
         print("Saltando refresh: STAYSKY_CONFIRM_REFRESH != true")
         return {"skipped": True}

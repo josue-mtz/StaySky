@@ -13,7 +13,7 @@
 **Materia:** [Nombre de la materia]
 **Profesor:** [Nombre del profesor]
 **Fecha de entrega:** [Fecha]
-**Última revisión técnica:** 20 de noviembre de 2026
+**Última revisión técnica:** 22 de noviembre de 2026
 
 ## Resumen ejecutivo
 
@@ -68,7 +68,7 @@ Construir una aplicación web funcional y contenerizada con Docker que integre v
 4. **Orquestar la actualización de datos y estadísticas** con **Apache Airflow**, mediante DAGs programados y re-ejecutables.
 5. **Contenerizar todo el stack** (6 servicios) con **Docker Compose**, garantizando reproducibilidad.
 6. **Aplicar reglas de calidad de datos** que resuelvan inconsistencias reales detectadas en las fuentes (específicamente, el bug USD/MXN en Booking Hotels).
-7. **Cuidar la cuota de la API** de RapidAPI (20 requests/mes en plan Basic) mediante una estrategia explícita de caché en Mongo.
+7. **Gestionar las llamadas externas** a RapidAPI con caché, importación local y confirmación explícita de refresh. La cuota y los cargos siguen dependiendo del plan del proveedor; StaySky no aplica un tope local.
 
 ---
 
@@ -88,7 +88,7 @@ Construir una aplicación web funcional y contenerizada con Docker que integre v
 | Frontend | **HTML5 + Tailwind CSS** (vía CDN) | 3.x | Páginas estáticas de planificación y “Acerca de”, sin proceso de build |
 | Contenedores | **Docker** + **Docker Compose** | — | 6 servicios orquestados |
 | API de clima | **Open-Meteo Archive** | — | Histórico diario, gratuito, sin API key |
-| API de vuelos/hoteles | **Booking.com** vía **RapidAPI** | — | Plan Basic configurado con límite de 20 requests mensuales |
+| API de vuelos/hoteles | **Booking.com** vía **RapidAPI** | — | Consultas externas sujetas a la cuota y condiciones del plan del proveedor |
 | Editor | **Visual Studio Code** | — | IDE principal |
 | Control de versiones | **Git** (local) | — | Historial de desarrollo |
 
@@ -180,15 +180,18 @@ En el formulario, el regreso es opcional; al elegir viaje redondo, se usa esa fe
 
 ### 4.3. Principio de diseño clave: **caché obligatorio**
 
-La API de Booking vía RapidAPI tiene un plan Basic limitado a **20 requests al mes**. Un diseño naïve (llamar a Booking en cada búsqueda) agotaría la cuota en una tarde de pruebas. Por eso:
+Durante el desarrollo, el plan Basic de Booking vía RapidAPI reportaba una cuota de **20 requests al mes**. Esa cuota pertenece al proveedor y puede cambiar según el plan. Para evitar llamadas innecesarias:
 
 - Los endpoints `GET /api/flights/{o}/{d}` y `GET /api/hotels/{dest}` **siempre leen de MongoDB**, nunca de RapidAPI.
 - Existen dos formas de poblar Mongo:
   - `POST /api/flights/import-json` (o `/api/hotels/import-json`) → sube un JSON ya descargado, **0 requests**.
-  - `POST /api/flights/refresh?confirm=yes` y `POST /api/hotels/refresh?confirm=yes` → cada llamada real puede **consumir 1 request**, requiere confirmación y se contabiliza en el uso compartido.
+  - `POST /api/flights/refresh?confirm=yes` y `POST /api/hotels/refresh?confirm=yes` → cada consulta directa puede consumir cuota del proveedor, requiere confirmación y se contabiliza en el uso compartido cuando la respuesta externa es exitosa.
+- Para refresh de hoteles hay `dest_id` de Booking confirmados para Cancún (`CUN`) y Oaxaca (`OAX`); otros destinos requieren proporcionar su identificador.
+- El refresh de vuelos solicita importes en MXN (`currency_code=MXN`) para que la puntuación sea comparable con el presupuesto capturado en MXN.
 - Los DAGs de Airflow no hacen llamadas normales a Booking. El refresh opcional de vuelos está apagado por configuración; el paso de refresh de hoteles está deshabilitado en el código actual. Sí actualizan clima con Open-Meteo y recomputan estadísticas usando la caché.
+- StaySky no impone un máximo local de llamadas: `/api/flights/usage` informa el uso registrado, pero la cuota, posibles cargos y bloqueos los determina RapidAPI. Los rechazos del proveedor pueden no quedar registrados como respuestas exitosas en el contador local.
 
-**Resultado medible en la revisión del 20 de noviembre de 2026:** `/api/flights/usage` reportó **8 de 20 requests** usados. Es una lectura del estado actual, no un valor permanente: puede cambiar si se ejecutan nuevos refreshes.
+**Fotografía histórica del 20 de noviembre de 2026:** `/api/flights/usage` reportó **8 requests exitosos registrados** y el plan externo reportado entonces tenía una cuota de 20. Ese contador no determina la cuota actual del proveedor.
 
 ### 4.4. Endpoints principales
 
@@ -200,14 +203,15 @@ La API de Booking vía RapidAPI tiene un plan Basic limitado a **20 requests al 
 | `GET` | `/api/weather/{iata}/climate` | Devuelve promedios mensuales del clima cacheado. |
 | `GET` | `/api/flights/{origin}/{destination}?date=YYYY-MM-DD` | Lee vuelos cacheados, ordenados por precio. |
 | `GET` | `/api/flights/{origin}/{destination}/dates` | Lista fechas con vuelos disponibles en caché. |
+| `POST` | `/api/flights/usage/seed?used_before=N` | Registra uso externo previo para el contador informativo. |
 | `POST` | `/api/flights/import-json` | Importa ofertas de un JSON sin llamar a RapidAPI. |
-| `POST` | `/api/flights/refresh` | Consulta Booking; requiere `confirm=yes` y consume cuota. |
-| `GET` | `/api/flights/usage` | Muestra requests usados, límite y restantes. |
+| `POST` | `/api/flights/refresh` | Consulta Booking; requiere `confirm=yes`. RapidAPI aplica su cuota externa; StaySky no tiene tope local. |
+| `GET` | `/api/flights/usage` | Informa uso de API registrado; `limit` y `remaining` son `null` porque no existe tope local. |
 | `GET` | `/api/hotels/{destination}` | Lee hoteles cacheados para `checkin` y `checkout`. |
 | `GET` | `/api/hotels/{destination}/dates` | Lista periodos de hospedaje disponibles en caché. |
 | `GET` | `/api/hotels/{destination}/currency-audit` | Resume inconsistencias de moneda detectadas. |
 | `POST` | `/api/hotels/import-json` | Importa hoteles de un JSON sin consumir cuota. |
-| `POST` | `/api/hotels/refresh` | Consulta Booking; requiere `confirm=yes` y consume cuota. |
+| `POST` | `/api/hotels/refresh` | Consulta Booking; requiere `confirm=yes`. RapidAPI aplica su cuota externa; StaySky no tiene tope local. |
 | `POST` | `/api/search/` | Combina clima, vuelos, hoteles y puntuaciones en una respuesta. |
 | `POST` / `GET` | `/api/admin/rebuild-stats`, `/api/admin/stats` | Reconstruye y consulta estadísticas agregadas. |
 | `GET` | `/api/admin/pipeline-runs` | Consulta el historial de ejecuciones de los pipelines. |
@@ -284,9 +288,9 @@ El plan original se organizó en **7 fases incrementales**. Se realizaron las fa
 
 ---
 
-### 5.3. Fase 3 — Vuelos con estrategia anti-quema de cuota
+### 5.3. Fase 3 — Vuelos con caché y consulta directa confirmada
 
-**Objetivo:** integrar vuelos de Booking, sin consumir la cuota limitada de RapidAPI.
+**Objetivo:** integrar vuelos de Booking, usando caché para las búsquedas normales y separando las consultas directas a RapidAPI.
 
 **Actividades:**
 - `services/booking_client.py`: cliente HTTP a RapidAPI Booking Flights, con manejo de errores `BookingApiError`.
@@ -299,8 +303,8 @@ El plan original se organizó en **7 fases incrementales**. Se realizaron las fa
   - `GET /api/flights/{origin}/{destination}?date=` → **lee Mongo, 0 requests**.
   - `GET /api/flights/{origin}/{destination}/dates` → consulta fechas con vuelos cacheados.
   - `POST /api/flights/import-json` → carga JSON offline, **0 requests**.
-  - `POST /api/flights/refresh?confirm=yes` → **1 request**, auditado.
-  - `GET /api/flights/usage` → monitor de cuota RapidAPI.
+  - `POST /api/flights/refresh?confirm=yes` → consulta Booking tras confirmación explícita. StaySky no aplica tope local; la cuota y posibles cargos siguen sujetos al proveedor.
+  - `GET /api/flights/usage` → informa el uso externo registrado, sin calcular requests restantes de un plan.
 - Frontend: tarjetas de vuelos con aerolínea, horarios, duración, badges y precio.
 
 **Estrategia anti-quema implementada:**
@@ -309,11 +313,11 @@ El plan original se organizó en **7 fases incrementales**. Se realizaron las fa
 |---|---|---|
 | Importar un JSON de vuelos ya descargado | 0 requests | Al preparar la caché |
 | Desarrollo y debugging de normalizer | 0 requests | Toda la fase |
-| Llamada real a Booking para una ruta adicional (MEX→SJD) | 1 request | Opcional al final |
+| Llamada real a Booking para una ruta adicional (MEX→SJD) | Sujeta al plan de RapidAPI | Opcional y requiere `confirm=yes` |
 
 **Verificación:**
 - En la caché consultada actualmente hay **30 vuelos: 15 para MEX→CUN y 15 para MEX→SJD**, todos para el 12 de marzo de 2027.
-- `/api/flights/usage` reporta `used: 8`, `remaining: 12` (7 requests registrados como previos y 1 registrado por el sistema).
+- En la fotografía histórica de uso, `/api/flights/usage` reportó 8 respuestas exitosas registradas (7 previas y 1 registrada por el sistema). El endpoint ya no informa requests restantes ni bloquea por un límite local.
 - Frontend muestra las tarjetas al buscar MEX→CUN con fecha 2027-03-12.
 
 **Capturas:**
@@ -427,7 +431,7 @@ Se decidió **saltar** esta fase del plan original (comparador multi-destino) pa
 - En la última consulta de la API se observaron **6** registros en `/api/admin/pipeline-runs`; el número aumenta con nuevas ejecuciones.
 - `db.pipeline_stats.countDocuments()` = **3** (2 rutas de vuelo + 1 destino hotelero).
 - `db.getCollection("pipeline_stats").find({type:"hotel"})` devuelve `{key: 'hotel:CUN-2027-03-12-2027-03-15', count: 20, minPrice: 2416.17}`.
-- `/api/flights/usage` reportó **8 / 20** en la revisión del 20 de noviembre de 2026.
+- `/api/flights/usage` registró **8 respuestas externas exitosas** en la revisión del 20 de noviembre de 2026; el límite de 20 correspondía a la cuota externa del plan reportada entonces, no a un bloqueo local de StaySky.
 
 **Capturas:**
 - [INSERTAR CAPTURA: 22_airflow_dags.png]
@@ -464,7 +468,7 @@ Las cifras de datos y ejecuciones son una **fotografía del entorno local consul
 | Vuelos cacheados | 30 (15 para MEX→CUN y 15 para MEX→SJD, fecha 2027-03-12) |
 | Hoteles cacheados | 20 (CUN, 2027-03-12 a 2027-03-15) |
 | Registros de clima consultados | 365 para CUN durante 2023 |
-| Requests de RapidAPI | 8 / 20 al momento de la revisión |
+| Respuestas exitosas de RapidAPI registradas | 8 en la fotografía del 20 de noviembre de 2026 (la cuota del plan externo reportada entonces era 20) |
 | DAGs de Airflow definidos | 3 |
 | Ejecuciones registradas en `pipeline_runs` | 6 al momento de la revisión |
 | Agregaciones en `pipeline_stats` | 3 (2 rutas de vuelo y 1 consulta de hoteles) |
@@ -529,16 +533,17 @@ En la consulta actual, **15 de 20 hoteles de Cancún (75%)** presentan inconsist
 
 Los tres DAGs están configurados para ejecutarse diariamente. En las pruebas de desarrollo se ejecutaron desde Airflow; la API registra las reconstrucciones de estadísticas en `pipeline_runs`. `flights_etl` omite el refresh pago mientras `STAYSKY_CONFIRM_REFRESH` no sea `true`, por lo que su recorrido normal no consume cuota de Booking.
 
-### 6.6. Cuota de API preservada
+### 6.6. Registro de uso de API
 
 [INSERTAR CAPTURA: 28_usage_still_8.png]
 
-En la revisión del 20 de noviembre de 2026, `/api/flights/usage` reportó **8 de 20 requests** utilizados y 12 restantes. El contador combina el uso registrado por el sistema con el uso previo declarado; cambiará si se hacen más llamadas reales.
+En la revisión del 20 de noviembre de 2026, `/api/flights/usage` reportó **8 respuestas externas exitosas registradas** (7 previas declaradas y 1 registrada por el sistema). La aplicación ya no bloquea al llegar a un límite local de 20: `limit` y `remaining` se devuelven como `null`. RapidAPI conserva sus propias cuotas y puede rechazar solicitudes; el contador local no incluye necesariamente respuestas externas fallidas.
 
 ### 6.7. Alcance y limitaciones de la versión
 
 - El catálogo contiene 10 ciudades mexicanas, pero tener una ciudad registrada no significa que haya vuelos u hoteles cacheados para cualquier ruta o fecha.
-- En la consulta documentada, los vuelos disponibles corresponden a MEX→CUN y MEX→SJD para el 12 de marzo de 2027; los 20 hoteles corresponden a CUN del 12 al 15 de marzo de 2027. Para otras combinaciones la interfaz puede indicar que aún no hay datos.
+- En la fotografía del 20 de noviembre de 2026, los vuelos disponibles correspondían a MEX→CUN y MEX→SJD para el 12 de marzo de 2027; los 20 hoteles correspondían a CUN del 12 al 15 de marzo de 2027.
+- En la prueba del 22 de noviembre de 2026 se consultó GDL→OAX para el 25 de mayo de 2027, estancia del 25 al 30 de mayo, dos adultos y clima templado. Se guardaron 15 ofertas de vuelo y 20 hoteles; la búsqueda devolvió `tripScore: 83.4`, tres recomendaciones de cada tipo y precios en MXN. La tarifa de vuelo corresponde solo a la salida; el enlace permite consultar el viaje redondo en Booking.com.
 - El clima que se muestra es un promedio mensual derivado de datos históricos de 2023. No predice el tiempo de un día futuro.
 - El `tripScore` combinado se calcula cuando existen tanto vuelos como hoteles para la búsqueda; si falta alguno, la API puede devolverlo como `null` y explica los datos faltantes en `warnings`.
 - La colección `searches` está creada, pero el endpoint de búsqueda no guarda todavía un historial de consultas.
@@ -554,7 +559,7 @@ El proyecto integra una interfaz web, una API, almacenamiento documental y proce
 
 > Revisa y personaliza esta reflexión para que describa tu experiencia real y las actividades que realizaste.
 
-Este proyecto me permitió enfrentar por primera vez un escenario donde **las restricciones externas moldean la arquitectura**. El plan Basic de RapidAPI (20 requests/mes) no era un detalle — era la restricción central del proyecto, y todas las decisiones de diseño posteriores (caché obligatorio, import desde JSON, DAGs que no llaman APIs de pago, contador de uso) emanaron de esa restricción.
+Este proyecto me permitió enfrentar por primera vez un escenario donde **las restricciones externas moldean la arquitectura**. Durante el desarrollo, el plan Basic de RapidAPI reportaba 20 requests al mes; esto impulsó decisiones como caché, importación desde JSON, DAGs sin refresh pago por defecto y registro de uso. Para facilitar las pruebas directas se retiró el tope local de StaySky, pero se conservó `confirm=yes`: la cuota, posibles cargos y bloqueos siguen dependiendo de RapidAPI.
 
 Aprendizajes principales:
 

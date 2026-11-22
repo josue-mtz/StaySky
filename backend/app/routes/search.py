@@ -52,6 +52,7 @@ async def _get_month_climate(iata: str, month: str) -> dict | None:
 
 @router.post("/", response_model=SearchResponse, summary="Búsqueda unificada")
 async def search(req: SearchRequest):
+    """Calcula puntuaciones y recomendaciones usando los datos cacheados."""
     origin = req.origin.upper()
     destination = req.destination.upper()
     warnings: list[str] = []

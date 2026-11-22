@@ -22,6 +22,7 @@ WMO_DESC = {
 
 
 def _description(code: int | None) -> str:
+    """Traduce un código meteorológico WMO a una descripción en español."""
     return WMO_DESC.get(code or 0, "Sin dato")
 
 

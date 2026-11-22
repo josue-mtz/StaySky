@@ -1,0 +1,1 @@
+"""Modelos de datos y contratos de entrada/salida de la API."""

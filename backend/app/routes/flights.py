@@ -3,9 +3,9 @@ Endpoints de vuelos.
 
 REGLA CRÍTICA DE DISEÑO:
   - GET /api/flights/{origin}/{destination}  → SIEMPRE lee de Mongo (0 requests)
-  - POST /api/flights/refresh                → ÚNICO punto que llama a RapidAPI
+  - POST /api/flights/refresh                → ÚNICO punto que consulta RapidAPI
   - POST /api/flights/import-json            → Carga JSON offline (0 requests)
-  - GET  /api/flights/usage                  → Monitorea uso de la cuota
+  - GET  /api/flights/usage                  → Informa uso registrado
 """
 from fastapi import APIRouter, Body, HTTPException, Query
 
@@ -17,7 +17,6 @@ from app.services.booking_urls import build_flight_url
 
 router = APIRouter(prefix="/api/flights", tags=["flights"])
 
-MONTHLY_LIMIT = 20  # Plan Basic RapidAPI
 usage_col = db["api_usage"]
 aggregations_col = db["flight_aggregations"]
 
@@ -47,14 +46,16 @@ async def _save_offers(
 
 
 async def _log_api_call(params: dict) -> None:
+    """Registra en Mongo una respuesta de vuelos obtenida mediante RapidAPI."""
     await usage_col.insert_one({"endpoint": "flights", "params": params, "timestamp": utcnow()})
 
 
 @router.get(
     "/usage",
-    summary="Cuántos requests de RapidAPI has gastado",
+    summary="Uso externo registrado por la integración de Booking",
 )
 async def usage():
+    """Resume las llamadas registradas sin aplicar un tope local."""
     logged = await usage_col.count_documents({"endpoint": {"$ne": "SEED"}})
     seed_doc = await usage_col.find_one({"endpoint": "SEED"})
     seeded = seed_doc.get("used_before", 0) if seed_doc else 0
@@ -63,13 +64,10 @@ async def usage():
         "used": total,
         "logged_by_system": logged,
         "pre_existing": seeded,
-        "limit": MONTHLY_LIMIT,
-        "remaining": max(0, MONTHLY_LIMIT - total),
-        "warning": (
-            "MENOS DE 5 REQUESTS. Evita llamadas reales."
-            if (MONTHLY_LIMIT - total) < 5
-            else None
-        ),
+        "limit": None,
+        "remaining": None,
+        "local_limit_enforced": False,
+        "note": "StaySky registra el uso sin aplicar un tope local; la cuota del plan RapidAPI sigue vigente.",
     }
 
 
@@ -78,6 +76,7 @@ async def usage():
     summary="Registra llamadas ya hechas antes de usar este sistema",
 )
 async def seed_usage(used_before: int = Query(..., ge=0)):
+    """Registra el uso previo conocido para mantener el contador informativo."""
     await usage_col.delete_many({"endpoint": "SEED"})
     await usage_col.insert_one(
         {"endpoint": "SEED", "used_before": used_before, "timestamp": utcnow()}
@@ -96,6 +95,7 @@ async def get_flights(
     date: str = Query(..., description="YYYY-MM-DD"),
     adults: int = Query(1, ge=1, le=9),
 ):
+    """Lista vuelos cacheados por ruta y fecha, con enlace de búsqueda."""
     origin, destination = origin.upper(), destination.upper()
 
     cursor = flights_col.find(
@@ -136,6 +136,7 @@ async def get_flights(
     summary="Qué fechas tienen datos cacheados para esta ruta",
 )
 async def available_dates(origin: str, destination: str):
+    """Lista fechas cacheadas y cantidad de ofertas para la ruta indicada."""
     pipeline = [
         {"$match": {"origin": origin.upper(), "destination": destination.upper()}},
         {"$group": {"_id": "$departDate", "count": {"$sum": 1},
@@ -179,7 +180,7 @@ async def import_flights_json(
 
 @router.post(
     "/refresh",
-    summary="CONSUME 1 REQUEST · Llama RapidAPI y guarda",
+    summary="Consulta RapidAPI con confirmación y guarda vuelos",
 )
 async def refresh_flights(
     origin: str = Query(...),
@@ -189,21 +190,18 @@ async def refresh_flights(
     adults: int = Query(1, ge=1, le=9),
 ):
     """
-    Cada llamada = 1 request de tu cuota mensual.
-    Requiere confirm=yes para evitar llamadas accidentales.
+    Consulta RapidAPI tras recibir confirm=yes y guarda las ofertas válidas.
+
+    StaySky no impone un máximo local de llamadas; RapidAPI puede rechazar
+    solicitudes según la cuota y las condiciones del plan configurado.
     """
     if confirm.lower() != "yes":
         raise HTTPException(
             400,
-            "Confirmación requerida. Agrega ?confirm=yes para consumir 1 request.",
+            "Confirmación requerida. Agrega ?confirm=yes para consultar RapidAPI.",
         )
 
     usage_now = await usage()
-    if usage_now["remaining"] <= 0:
-        raise HTTPException(
-            429,
-            f"Cuota agotada ({usage_now['used']}/{usage_now['limit']}). No más llamadas.",
-        )
 
     try:
         raw = await search_flights(origin, destination, date, adults)
@@ -229,5 +227,5 @@ async def refresh_flights(
         "route": f"{origin.upper()}→{destination.upper()}",
         "date": date,
         "requests_used_total": usage_now["used"] + 1,
-        "requests_remaining": usage_now["remaining"] - 1,
+        "local_limit_enforced": False,
     }
